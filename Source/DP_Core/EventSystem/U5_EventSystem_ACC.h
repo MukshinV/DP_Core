@@ -30,7 +30,10 @@ class DP_CORE_API UU5_EventSystem_ACC : public UActorComponent
 
 public:	
 	// Sets default values for this component's properties
-	UU5_EventSystem_ACC();
+	UU5_EventSystem_ACC()
+	{
+		PrimaryComponentTick.bCanEverTick = false;
+	}
 
 protected:
 	virtual void BeginPlay() override;

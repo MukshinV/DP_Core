@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Engine/DataTable.h"
+#include "U5_EventSystem_ACC.h"
 
 #include "U5_Event_ACC.generated.h"
 
@@ -21,7 +22,10 @@ public:
 #pragma region Default
 public:	
 	// Sets default values for this component's properties
-	UU5_Event_ACC();
+	UU5_Event_ACC()
+	{
+		PrimaryComponentTick.bCanEverTick = false;
+	}
 
 protected:
 	// Called when the game starts
@@ -36,7 +40,6 @@ public:
 #pragma endregion Default
 #pragma region Utility
 	// Light internal utility fuction.
-	class ::UU5_EventSystem_ACC;
 	UU5_EventSystem_ACC* TryGetEventSystem();
 
 	// Returns TArray<FDataTableRowHandle> event_data

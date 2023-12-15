@@ -4,11 +4,6 @@
 #include "U5_Event_ACC.h"
 #include "U5_EventSystem_ACC.h"
 
-UU5_Event_ACC::UU5_Event_ACC()
-{
-	PrimaryComponentTick.bCanEverTick = false;
-}
-
 void UU5_Event_ACC::BeginPlay()
 {
 	Super::BeginPlay();
