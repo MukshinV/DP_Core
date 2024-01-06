@@ -9,7 +9,7 @@
 class UU5_GameInstance;
 class UU5_Behavior_ACC;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+UCLASS( Blueprintable, ClassGroup=(U5), meta=(BlueprintSpawnableComponent) )
 class DP_CORE_API UU5_Controller_ACC : public UActorComponent
 {
 	GENERATED_BODY()

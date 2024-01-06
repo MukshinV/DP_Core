@@ -39,7 +39,7 @@ void UU5_Controller_ACC::RegisterCurrentBehavior(UU5_Behavior_ACC* _behavior)
 {
 	if (_behavior)
 	{
-		CurrentBehavior->RegisterInController(this);
+		_behavior->RegisterInController(this);
 	}
 	else
 	{
