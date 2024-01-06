@@ -7,7 +7,7 @@ void UU5_Behavior_ACC::BeginPlay()
 
 void UU5_Behavior_ACC::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	 
+
 }
 
 void UU5_Behavior_ACC::Rep_ControllerBehavior()
@@ -31,4 +31,3 @@ void UU5_Behavior_ACC::TickComponent(float DeltaTime, ELevelTick TickType, FActo
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
-
