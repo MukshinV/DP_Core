@@ -5,6 +5,8 @@
 #include "Net/UnrealNetwork.h"
 #include "U5_Behavior_ACC.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNewController);
+
 class UU5_Controller_ACC;
 
 UCLASS( Blueprintable )
@@ -30,8 +32,14 @@ protected:
 
 public: // Controller Behavior
 
-	UPROPERTY(ReplicatedUsing = Rep_ControllerBehavior, DisplayName="@ControllerBehavior")
-	mutable TObjectPtr<UU5_Controller_ACC> ControllerBehavior = nullptr;
+	UPROPERTY(VisibleAnywhere, ReplicatedUsing = Rep_ControllerBehavior, DisplayName="@ControllerBehavior")
+	TObjectPtr<UU5_Controller_ACC> ControllerBehavior = nullptr;
+
+	UFUNCTION(BlueprintCallable, DisplayName="!GetControllerACC()")
+	UU5_Controller_ACC* GetControllerACC();
+
+	UPROPERTY(BlueprintAssignable)
+	FNewController cbNewController;
 
 	UFUNCTION()
 	void Rep_ControllerBehavior();

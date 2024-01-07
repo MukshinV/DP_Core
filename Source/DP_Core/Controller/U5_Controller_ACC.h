@@ -9,6 +9,8 @@
 class UU5_GameInstance;
 class UU5_Behavior_ACC;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNewCurrentBahavior);
+
 UCLASS( Blueprintable, ClassGroup=(U5), meta=(BlueprintSpawnableComponent) )
 class DP_CORE_API UU5_Controller_ACC : public UActorComponent
 {
@@ -43,6 +45,9 @@ public:// Current Behavior.
 
 	UPROPERTY(BlueprintReadOnly, DisplayName="@CurrentBehavior")
 	TObjectPtr<UU5_Behavior_ACC> CurrentBehavior = nullptr;
+
+	UPROPERTY(BlueprintAssignable)
+	FNewCurrentBahavior cbNewBehavior;
 
 	UFUNCTION(BlueprintCallable, DisplayName="!RegisterCurrentBehavior()")
 	void RegisterCurrentBehavior(UU5_Behavior_ACC* _behavior);

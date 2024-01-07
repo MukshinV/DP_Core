@@ -10,6 +10,8 @@
  * Global utils for the U5 plugin
  */
 
+#define U5_DO_DEBUG_LOG 1
+
 #define mDEVMSG(text)	std::cout<<text
 #define mQUOTED(text)	" ["	## text ##		"] "
 #define mSPASED(text)	" "		## text ##		" "
@@ -31,6 +33,10 @@ public:
 
 	UFUNCTION()
 	static void Message(const FString& _message);
+
+	UFUNCTION()
+	static void DebugMessage(const FString& _message)
+	{ if (U5_DO_DEBUG_LOG) { U5::Message(_message); } else return; }
 
 	UFUNCTION()
 	static void RegisterError(const FString& _error);

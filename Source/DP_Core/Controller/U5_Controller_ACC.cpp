@@ -49,10 +49,15 @@ void UU5_Controller_ACC::RegisterCurrentBehavior(UU5_Behavior_ACC* _behavior)
 
 void UU5_Controller_ACC::OnPossesSucces(const UU5_Behavior_ACC* _behavior)
 {
+	UU5_Behavior_ACC* previous = CurrentBehavior;
 	if (CurrentBehavior)
 	{
 		CurrentBehavior->UnregisterInController(this);
 	}
 	CurrentBehavior = const_cast<UU5_Behavior_ACC*>(_behavior);
+	if (previous != CurrentBehavior)
+	{
+		cbNewBehavior.Broadcast();
+	}
 }
 
