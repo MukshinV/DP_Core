@@ -1,16 +1,18 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
+
+///! Global utils for the U5 plugin.
 
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "U5_Utils.generated.h"
 
-/**
- * Global utils for the U5 plugin
- */
+
+
 
 #define U5_DO_DEBUG_LOG 1
+#ifndef U5_DEBUG_ENABLE
+#define U5_DEBUG_ENABLE U5_DO_DEBUG_LOG
+#endif
 
 #define mDEVMSG(text)	std::cout<<text
 #define mQUOTED(text)	" ["	## text ##		"] "
@@ -21,8 +23,11 @@
 #define mRBRACED(text)	" ("	## text ##		") "
 #define mQBRACED(text)	' "'	## text ##		'" '
 
+// TODO: FString strean or use standart tchar stream. printf style is kiiling me.
+#define mU5_FUNCTION(text) { if (U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) U5::DebugMessage ( FString( __func__ ) + TEXT(text) ); }
+
 UCLASS()
-class DP_CORE_API U5 : public UBlueprintFunctionLibrary
+class DP_CORE_API U5_EasyLogInterface : public UBlueprintFunctionLibrary
 {
 	GENERATED_BODY()
 public:
@@ -35,8 +40,7 @@ public:
 	static void Message(const FString& _message);
 
 	UFUNCTION()
-	static void DebugMessage(const FString& _message)
-	{ if (U5_DO_DEBUG_LOG) { U5::Message(_message); } else return; }
+	static void DebugMessage(const FString& _message);
 
 	UFUNCTION()
 	static void RegisterError(const FString& _error);
@@ -47,4 +51,10 @@ public:
 	UFUNCTION()
 	static void RegisterWarning(const FString& _error);
 
+};
+
+UCLASS()
+class DP_CORE_API U5 : public U5_EasyLogInterface
+{
+	GENERATED_BODY()
 };

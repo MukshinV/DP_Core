@@ -17,23 +17,20 @@ class DP_CORE_API UU5_Behavior_ACC : public UActorComponent
 public:
 	UU5_Behavior_ACC()
 	{
-		PrimaryComponentTick.bCanEverTick = false;
+		PrimaryComponentTick.bCanEverTick = true;
 		SetIsReplicatedByDefault(true);
 	}
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-	void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-	{
-		DOREPLIFETIME(UU5_Behavior_ACC, ControllerBehavior);
-	}
 
-public: // Controller Behavior
+public: // Controller Behavior.
 
 	UPROPERTY(VisibleAnywhere, ReplicatedUsing = Rep_ControllerBehavior, DisplayName="@ControllerBehavior")
-	TObjectPtr<UU5_Controller_ACC> ControllerBehavior = nullptr;
+	UU5_Controller_ACC* ControllerBehavior = nullptr;
 
 	UFUNCTION(BlueprintCallable, DisplayName="!GetControllerACC()")
 	UU5_Controller_ACC* GetControllerACC();
@@ -50,7 +47,8 @@ public: // Controller Behavior
 	UFUNCTION()
 	void UnregisterInController(const UU5_Controller_ACC* _controllerBehavior);
 
-public:
+public: // Input Events.
+
 	UFUNCTION(BlueprintCallable)
 	bool HandleInputEvent() { return false; }
 
