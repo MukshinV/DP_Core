@@ -5,13 +5,12 @@
 void UU5_Behavior_ACC::BeginPlay()
 {
 	Super::BeginPlay();
-	SetIsReplicated(true);
 }
 
 void UU5_Behavior_ACC::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 	DOREPLIFETIME_CONDITION_NOTIFY(ThisClass, ControllerBehavior, COND_None, REPNOTIFY_Always);
+	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
 }
 
 void UU5_Behavior_ACC::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -27,9 +26,9 @@ UU5_Controller_ACC* UU5_Behavior_ACC::GetControllerACC()
 	return ControllerBehavior;
 }
 
-void UU5_Behavior_ACC::Rep_ControllerBehavior()
+void UU5_Behavior_ACC::Rep_ControllerBehavior_Implementation(UU5_Controller_ACC* _OldController)
 {
-	U5::DebugMessage(TEXT("Rep_ControllerBehavior"));
+	mU5_DEBUGOUT(true, TEXT("Replication Success"));
 	ControllerBehavior->OnPossesSucces(this);
 }
 
@@ -37,12 +36,10 @@ void UU5_Behavior_ACC::Rep_ControllerBehavior()
 void UU5_Behavior_ACC::RegisterInController(const UU5_Controller_ACC* _controllerBehavior)
 {
 	ControllerBehavior = const_cast<UU5_Controller_ACC*>(_controllerBehavior);
-	if (GetOwner()->GetRemoteRole() == ENetRole::ROLE_SimulatedProxy)
+	if (true && GetOwner()->GetRemoteRole() == ENetRole::ROLE_SimulatedProxy)
 	{
-		U5::DebugMessage(FString::Printf(TEXT("Remote Net role: %i"), ENetRole::ROLE_SimulatedProxy));
-		Rep_ControllerBehavior();
+		Rep_ControllerBehavior(ControllerBehavior);
 	}
-	U5::DebugMessage(FString::Printf(TEXT("ControllerBehavior: %s"), *_controllerBehavior->GetName()));
 }
 
 void UU5_Behavior_ACC::UnregisterInController(const UU5_Controller_ACC* _controllerBehavior)

@@ -10,22 +10,28 @@
 
 void UU5_Controller_ACC::BeginPlay()
 {
-	Super::BeginPlay();
-	Controller = Cast<APlayerController>(GetOwner());
-	check(Controller);
+	{
+		Controller = Cast<APlayerController>(GetOwner());
+		check(Controller);
+
+	}
+
+	// Register in game instance.
 	if(Controller->IsLocalController())
 	{
-		UU5_GameInstance* gameInstance = Cast<UU5_GameInstance>(UGameplayStatics::GetGameInstance(GetOwner()));
-		if (gameInstance)
+		UGameInstance* gi = UGameplayStatics::GetGameInstance(GetOwner());
+		UU5_GameInstance* gameInst_ = Cast<UU5_GameInstance>(gi);
+		if (gameInst_)
 		{
-			gameInstance->SetLocalController(Controller);
+			gameInst_->SetLocalController(Controller);
 		}
 	}
+	Super::BeginPlay();
 }
 
 void UU5_Controller_ACC::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	U5::DebugMessage("EndPlay");
+	mU5_FUNCTION(false, "EndPlay");
 	Super::EndPlay(EndPlayReason);
 	if (Controller->IsLocalController())
 	{
@@ -49,7 +55,6 @@ void UU5_Controller_ACC::OnRegisterByGameInst(const UU5_GameInstance* _gameInst)
 
 void UU5_Controller_ACC::RegisterCurrentBehavior(UU5_Behavior_ACC* _behavior)
 {
-	mU5_FUNCTION("");
 	if (_behavior)
 	{
 		_behavior->RegisterInController(this);
@@ -62,7 +67,6 @@ void UU5_Controller_ACC::RegisterCurrentBehavior(UU5_Behavior_ACC* _behavior)
 
 void UU5_Controller_ACC::OnPossesSucces(const UU5_Behavior_ACC* _behavior)
 {
-	mU5_FUNCTION("");
 	UU5_Behavior_ACC* previous = CurrentBehavior;
 	if (CurrentBehavior)
 	{

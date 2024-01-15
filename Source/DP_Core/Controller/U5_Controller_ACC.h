@@ -35,7 +35,7 @@ public:// Behavior cascade.
 public:// Local Player Controller.
 
 	UPROPERTY(VisibleAnywhere, DisplayName="@Controller")
-	TObjectPtr<APlayerController> Controller = nullptr;
+	APlayerController* Controller = nullptr;
 
 public: // Game Instance.
 	TObjectPtr<UU5_GameInstance> GameInstance = nullptr;
@@ -44,7 +44,7 @@ public: // Game Instance.
 public:// Current Behavior.
 
 	UPROPERTY(BlueprintReadOnly, DisplayName="@CurrentBehavior")
-	TObjectPtr<UU5_Behavior_ACC> CurrentBehavior = nullptr;
+	UU5_Behavior_ACC* CurrentBehavior = nullptr;
 
 	UPROPERTY(BlueprintAssignable)
 	FNewCurrentBahavior cbNewBehavior;

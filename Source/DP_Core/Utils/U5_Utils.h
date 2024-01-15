@@ -1,13 +1,8 @@
 #pragma once
-
 ///! Global utils for the U5 plugin.
-
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
 #include "U5_Utils.generated.h"
-
-
-
 
 #define U5_DO_DEBUG_LOG 1
 #ifndef U5_DEBUG_ENABLE
@@ -24,7 +19,8 @@
 #define mQBRACED(text)	' "'	## text ##		'" '
 
 // TODO: FString strean or use standart tchar stream. printf style is kiiling me.
-#define mU5_FUNCTION(text) { if (U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) U5::DebugMessage ( FString( __func__ ) + TEXT(text) ); }
+#define mU5_FUNCTION(enable, text) { if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) U5::DebugMessage ( FString( __func__ ) + TEXT(text) ); }
+#define mU5_DEBUGOUT(enable, text) { if(enable){U5::DebugMessage(text);} }
 
 UCLASS()
 class DP_CORE_API U5_EasyLogInterface : public UBlueprintFunctionLibrary

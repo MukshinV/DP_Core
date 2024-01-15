@@ -1,25 +1,36 @@
 #include "U5_GameInstace.h"
 #include "../Controller/U5_Controller_ACC.h"
+#include "../Utils/U5_Utils.h"
 
-void UU5_GameInstance::SetLocalController(APlayerController* _controller)
+void UU5_GameInstance::SetLocalController(const APlayerController* _controller)
 {
-    check(_controller);
-    Controller = _controller;
-
-    if (UU5_Controller_ACC* controllerBehavior = Controller->FindComponentByClass<UU5_Controller_ACC>())
+    LocalController = const_cast<APlayerController*>(_controller);
+    if (LocalController)
     {
-        controllerBehavior->OnRegisterByGameInst(this);
+        if (UU5_Controller_ACC* controllerBehavior = LocalController->FindComponentByClass<UU5_Controller_ACC>())
+        {
+            SetControllerBehavior(controllerBehavior);
+        }
     }
+    
 }
 
 APlayerController* UU5_GameInstance::GetLocalController(bool _native)
 {
-    return nullptr;
+    if (_native)
+    {
+        return GetPrimaryPlayerController();
+    }
+    return LocalController;
 }
 
 void UU5_GameInstance::SetControllerBehavior(UU5_Controller_ACC* _controllerAcc)
 {
     ControllerACC = _controllerAcc;
+    if (ControllerACC)
+    {
+        ControllerACC->OnRegisterByGameInst(this);
+    }
 }
 
 UU5_Controller_ACC* UU5_GameInstance::GetControllerBehavior()
