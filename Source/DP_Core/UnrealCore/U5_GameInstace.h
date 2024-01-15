@@ -16,10 +16,10 @@ class DP_CORE_API UU5_GameInstance : public UGameInstance
 
 public:
 	UPROPERTY(BlueprintReadOnly, DisplayName="@LocalController")
-	TObjectPtr<APlayerController> Controller = nullptr;
+	APlayerController* LocalController = nullptr;
 
 	UFUNCTION(DisplayName = "!SetLocalController()")
-	void SetLocalController(APlayerController* _controller);
+	void SetLocalController(const APlayerController* _controller);
 
 	UFUNCTION(BlueprintCallable, DisplayName = "!GetLocalController()")
 	APlayerController* GetLocalController(bool _native);

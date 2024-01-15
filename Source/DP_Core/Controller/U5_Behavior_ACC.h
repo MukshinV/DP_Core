@@ -15,10 +15,12 @@ class DP_CORE_API UU5_Behavior_ACC : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	UU5_Behavior_ACC()
+	UU5_Behavior_ACC(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get())
+		:Super(ObjectInitializer)
 	{
 		PrimaryComponentTick.bCanEverTick = true;
 		SetIsReplicatedByDefault(true);
+		bAutoActivate = true;
 	}
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
@@ -39,7 +41,7 @@ public: // Controller Behavior.
 	FNewController cbNewController;
 
 	UFUNCTION()
-	void Rep_ControllerBehavior();
+	void Rep_ControllerBehavior(UU5_Controller_ACC* _OldController);
 
 	UFUNCTION()
 	void RegisterInController(const UU5_Controller_ACC* _controllerBehavior);
