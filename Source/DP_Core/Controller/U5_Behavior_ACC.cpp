@@ -26,7 +26,7 @@ UU5_Controller_ACC* UU5_Behavior_ACC::GetControllerACC()
 	return ControllerBehavior;
 }
 
-void UU5_Behavior_ACC::Rep_ControllerBehavior_Implementation(UU5_Controller_ACC* _OldController)
+void UU5_Behavior_ACC::Rep_ControllerBehavior(UU5_Controller_ACC* _OldController)
 {
 	mU5_DEBUGOUT(true, TEXT("Replication Success"));
 	ControllerBehavior->OnPossesSucces(this);

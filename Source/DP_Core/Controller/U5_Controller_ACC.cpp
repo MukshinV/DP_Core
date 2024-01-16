@@ -10,6 +10,7 @@
 
 void UU5_Controller_ACC::BeginPlay()
 {
+	// Check parent is Controller.
 	{
 		Controller = Cast<APlayerController>(GetOwner());
 		check(Controller);
@@ -26,6 +27,7 @@ void UU5_Controller_ACC::BeginPlay()
 			gameInst_->SetLocalController(Controller);
 		}
 	}
+
 	Super::BeginPlay();
 }
 

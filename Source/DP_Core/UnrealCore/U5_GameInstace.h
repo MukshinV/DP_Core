@@ -7,8 +7,6 @@
 #include "Components/ActorComponent.h"
 #include "U5_GameInstace.generated.h"
 
-class APlayerController;
-class UU5_Controller_ACC;
 UCLASS(Blueprintable)
 class DP_CORE_API UU5_GameInstance : public UGameInstance
 {
@@ -16,7 +14,7 @@ class DP_CORE_API UU5_GameInstance : public UGameInstance
 
 public:
 	UPROPERTY(BlueprintReadOnly, DisplayName="@LocalController")
-	APlayerController* LocalController = nullptr;
+	class APlayerController* LocalController = nullptr;
 
 	UFUNCTION(DisplayName = "!SetLocalController()")
 	void SetLocalController(const APlayerController* _controller);
@@ -26,11 +24,23 @@ public:
 
 public:
 	UPROPERTY(BlueprintReadOnly, DisplayName = "@ControllerBehavior")
-	TObjectPtr<UU5_Controller_ACC> ControllerACC = nullptr;
+	TObjectPtr<class UU5_Controller_ACC> ControllerACC = nullptr;
 
 	UFUNCTION(DisplayName="!SetControllerBehavior()")
 	void SetControllerBehavior(UU5_Controller_ACC* _controllerAcc);
 
 	UFUNCTION(BlueprintCallable, DisplayName = "!GetLocalControllerACC()")
 	UU5_Controller_ACC* GetControllerBehavior();
+
+public: // Level Actor.
+	TObjectPtr<class AU5_Level_CA> LevelActor = nullptr;
+	
+	UFUNCTION(DisplayName="!RegisterLevelActor()")
+	void RegisterLevelActor(const AU5_Level_CA* _level);
+	
+	UFUNCTION(DisplayName="!RegisterLevelActor()")
+	void UnRegisterLevelActor(const AU5_Level_CA* _level);
+
+	UFUNCTION(BlueprintCallable, DisplayName="!GetLevelActor()")
+	AU5_Level_CA* GetLevelActor() const;
 };

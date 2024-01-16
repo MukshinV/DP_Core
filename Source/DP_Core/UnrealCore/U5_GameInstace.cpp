@@ -1,6 +1,7 @@
 #include "U5_GameInstace.h"
 #include "../Controller/U5_Controller_ACC.h"
 #include "../Utils/U5_Utils.h"
+#include "U5_Level_CA.h"
 
 void UU5_GameInstance::SetLocalController(const APlayerController* _controller)
 {
@@ -36,4 +37,26 @@ void UU5_GameInstance::SetControllerBehavior(UU5_Controller_ACC* _controllerAcc)
 UU5_Controller_ACC* UU5_GameInstance::GetControllerBehavior()
 {
     return ControllerACC;
+}
+
+void UU5_GameInstance::RegisterLevelActor(const AU5_Level_CA* _level)
+{
+    // Only one LevelActor can be at level.
+    check(!LevelActor);
+    LevelActor = const_cast<AU5_Level_CA*>(_level);
+    check(LevelActor);
+}
+
+void UU5_GameInstance::UnRegisterLevelActor(const AU5_Level_CA* _level)
+{
+    check(LevelActor);
+    if (LevelActor == _level)
+    {
+        LevelActor = nullptr;
+    }
+}
+
+AU5_Level_CA* UU5_GameInstance::GetLevelActor() const
+{
+    return LevelActor;
 }
