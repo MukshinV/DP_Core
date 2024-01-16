@@ -21,6 +21,11 @@ void UU5_Behavior_ACC::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	}
 }
 
+void UU5_Behavior_ACC::PostInitProperties()
+{
+	Super::PostInitProperties();
+}
+
 UU5_Controller_ACC* UU5_Behavior_ACC::GetControllerACC()
 {
 	return ControllerBehavior;
@@ -45,6 +50,11 @@ void UU5_Behavior_ACC::RegisterInController(const UU5_Controller_ACC* _controlle
 void UU5_Behavior_ACC::UnregisterInController(const UU5_Controller_ACC* _controllerBehavior)
 {
 	ControllerBehavior = nullptr;
+}
+
+void UU5_Behavior_ACC::InitBehaviorInGI_Internal()
+{
+
 }
 
 

@@ -28,6 +28,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PostInitProperties() override;
 
 public: // Controller Behavior.
 
@@ -54,4 +55,6 @@ public: // Input Events.
 	UFUNCTION(BlueprintCallable)
 	bool HandleInputEvent() { return false; }
 
+private: // Internal staff.
+	void InitBehaviorInGI_Internal();
 };

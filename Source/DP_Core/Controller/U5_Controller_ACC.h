@@ -26,6 +26,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PostInitProperties() override;
 
 public:// Behavior cascade.
 	
@@ -54,4 +55,7 @@ public:// Current Behavior.
 
 	UFUNCTION(DisplayName="!PossesSuccesed")
 	void OnPossesSucces(const UU5_Behavior_ACC* _behavior);
+
+private: // Internal staff.
+	void InitControllerInGI_Internal();
 };

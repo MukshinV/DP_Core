@@ -10,25 +10,8 @@
 
 void UU5_Controller_ACC::BeginPlay()
 {
-	// Check parent is Controller.
-	{
-		Controller = Cast<APlayerController>(GetOwner());
-		check(Controller);
-
-	}
-
-	// Register in game instance.
-	if(Controller->IsLocalController())
-	{
-		UGameInstance* gi = UGameplayStatics::GetGameInstance(GetOwner());
-		UU5_GameInstance* gameInst_ = Cast<UU5_GameInstance>(gi);
-		if (gameInst_)
-		{
-			gameInst_->SetLocalController(Controller);
-		}
-	}
-
 	Super::BeginPlay();
+	InitControllerInGI_Internal();
 }
 
 void UU5_Controller_ACC::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -43,6 +26,11 @@ void UU5_Controller_ACC::EndPlay(const EEndPlayReason::Type EndPlayReason)
 			gameInstance->SetLocalController(nullptr);
 		}
 	}
+}
+
+void UU5_Controller_ACC::PostInitProperties()
+{
+	Super::PostInitProperties();
 }
 
 void UU5_Controller_ACC::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -78,6 +66,27 @@ void UU5_Controller_ACC::OnPossesSucces(const UU5_Behavior_ACC* _behavior)
 	if (previous != CurrentBehavior)
 	{
 		cbNewBehavior.Broadcast();
+	}
+}
+
+void UU5_Controller_ACC::InitControllerInGI_Internal()
+{
+	// Check parent is Controller.
+	{
+		Controller = Cast<APlayerController>(GetOwner());
+		check(Controller);
+
+	}
+
+	// Register in game instance.
+	if (Controller->IsLocalController())
+	{
+		UGameInstance* gi = UGameplayStatics::GetGameInstance(GetOwner());
+		UU5_GameInstance* gameInst_ = Cast<UU5_GameInstance>(gi);
+		if (gameInst_)
+		{
+			gameInst_->SetLocalController(Controller);
+		}
 	}
 }
 

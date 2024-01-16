@@ -5,6 +5,7 @@
 
 void UU5_GameInstance::SetLocalController(const APlayerController* _controller)
 {
+    mU5_FUNCTION(true,"");
     LocalController = const_cast<APlayerController*>(_controller);
     if (LocalController)
     {
@@ -27,6 +28,7 @@ APlayerController* UU5_GameInstance::GetLocalController(bool _native)
 
 void UU5_GameInstance::SetControllerBehavior(UU5_Controller_ACC* _controllerAcc)
 {
+    mU5_FUNCTION(true, "");
     ControllerACC = _controllerAcc;
     if (ControllerACC)
     {
@@ -36,6 +38,7 @@ void UU5_GameInstance::SetControllerBehavior(UU5_Controller_ACC* _controllerAcc)
 
 UU5_Controller_ACC* UU5_GameInstance::GetControllerBehavior()
 {
+    mU5_FUNCTION(true, "");
     return ControllerACC;
 }
 

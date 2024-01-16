@@ -4,12 +4,6 @@
 
 void AU5_Level_CA::BeginPlay()
 {
-	UU5_GameInstance* gameInstance = Cast<UU5_GameInstance>(UGameplayStatics::GetGameInstance(this));
-	if (gameInstance)
-	{
-		gameInstance->RegisterLevelActor(this);
-	}
-
 	Super::BeginPlay();
 }
 
@@ -23,9 +17,25 @@ void AU5_Level_CA::EndPlay(EEndPlayReason::Type _reason)
 
 	Super::EndPlay(_reason);
 }
-// Called every frame
+
+void AU5_Level_CA::PostInitializeComponents()
+{
+	Super::PostInitializeComponents();
+	RegisterActorInGI_Internal();
+}
+
+
 void AU5_Level_CA::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AU5_Level_CA::RegisterActorInGI_Internal()
+{
+	UU5_GameInstance* gameInstance = Cast<UU5_GameInstance>(UGameplayStatics::GetGameInstance(this));
+	if (gameInstance)
+	{
+		gameInstance->RegisterLevelActor(this);
+	}
 }
 
