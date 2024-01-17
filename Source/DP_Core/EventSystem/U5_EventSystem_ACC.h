@@ -17,7 +17,7 @@ struct FEventHandlers
 	GENERATED_BODY()
 
 	UPROPERTY()
-	float Value;
+	float Value {0.f};
 
 	UPROPERTY()
 	TArray<UU5_Event_ACC*> Events;

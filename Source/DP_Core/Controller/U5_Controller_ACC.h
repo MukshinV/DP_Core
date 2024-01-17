@@ -28,13 +28,11 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 	virtual void PostInitProperties() override;
 
-public:// Behavior cascade.
-	
+public:	// Behavior cascade.
 	UPROPERTY(DisplayName="@BehaviorCascade")
 	TArray<UU5_Behavior_ACC*> BehaviorsCascade;
 
 public:// Local Player Controller.
-
 	UPROPERTY(VisibleAnywhere, DisplayName="@Controller")
 	APlayerController* Controller = nullptr;
 
@@ -42,8 +40,7 @@ public: // Game Instance.
 	TObjectPtr<UU5_GameInstance> GameInstance = nullptr;
 	void OnRegisterByGameInst(const UU5_GameInstance* _gameInst);
 
-public:// Current Behavior.
-
+public: // Current Behavior.
 	UPROPERTY(BlueprintReadOnly, DisplayName="@CurrentBehavior")
 	UU5_Behavior_ACC* CurrentBehavior = nullptr;
 
