@@ -2,9 +2,14 @@
 #include "U5_EventSystem_ACC.h"
 #include "U5_Event_ACC.h"
 
+#include "../Utils/U5_Utils.h"
+
+#include "GameFramework/GameMode.h"
+
 void UU5_EventSystem_ACC::BeginPlay()
 {
 	Super::BeginPlay();
+	CheckParent_Internal();
 }
 
 void UU5_EventSystem_ACC::OnComponentCreated()
@@ -19,8 +24,9 @@ void UU5_EventSystem_ACC::TickComponent(float DeltaTime, ELevelTick TickType, FA
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 }
 
-void UU5_EventSystem_ACC::CheckParent()
+void UU5_EventSystem_ACC::CheckParent_Internal()
 {
+	check(Cast<AGameModeBase>(GetOwner()));
 }
 
 void UU5_EventSystem_ACC::EventHandleToString(FString& _result, const FDataTableRowHandle& _handle)
@@ -31,12 +37,14 @@ void UU5_EventSystem_ACC::EventHandleToString(FString& _result, const FDataTable
 void UU5_EventSystem_ACC::RegisterEvent(UU5_Event_ACC* _event)
 {
 	check(_event);
+	mU5_FUNCMESS(true, _event->GetReadableName());
 	EventSystemData.AddEvent(_event);
 }
 
 void UU5_EventSystem_ACC::UnRegisterEvent(UU5_Event_ACC* _event)
 {
 	check(_event);
+	mU5_FUNCMESS(true, _event->GetReadableName());
 	for (FDataTableRowHandle& _handle : _event->ResponceList)
 	{
 		FString eventTag; EventHandleToString(eventTag, _handle);
@@ -72,6 +80,21 @@ void UU5_EventSystem_ACC::SetEventValueH(const FDataTableRowHandle& _handle, flo
 	SetEventValueS(eventTag, _value);
 }
 
+float UU5_EventSystem_ACC::GetEventValueS(const FString& _name)
+{
+	if (const FEventHandlers* handlers = EventSystemData.GetEventHandlers(_name))
+	{
+		return handlers->Value;
+	}
+	return 0.f;
+}
+
+float UU5_EventSystem_ACC::GetEventValueH(const FDataTableRowHandle& _handle)
+{
+	FString eventTag; EventHandleToString(eventTag, _handle);
+	return GetEventValueS(eventTag);
+}
+
 void UU5_EventSystem_ACC::FEventSystemData::AddEvent(UU5_Event_ACC* _event)
 {
 	const UU5_Event_ACC::event_data_t eventData = _event->GetEventData();
@@ -87,4 +110,14 @@ void UU5_EventSystem_ACC::FEventSystemData::AddEvent(UU5_Event_ACC* _event)
 		handleStruct->Events.AddUnique(_event);
 		_event->SetEventValue(eventTag, handleStruct->Value);
 	};
+}
+
+void UU5_EventSystem_ACC::FEventSystemData::RemoveEvent(const UU5_Event_ACC* _event)
+{
+
+}
+
+FEventHandlers* UU5_EventSystem_ACC::FEventSystemData::GetEventHandlers(const FString& _key)
+{
+	return Events.Find(_key);
 }
