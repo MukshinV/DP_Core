@@ -60,7 +60,7 @@ public: // Event system.
 	public: // Event handlers.
 		TMap<FString, FEventHandlers> Events;
 
-		void AddEvent(UU5_Event_ACC* _event);
+		void AddEvent(const UU5_Event_ACC* _event);
 		void RemoveEvent(const UU5_Event_ACC* _event);
 
 		void SetEventsValue() {}
@@ -73,10 +73,10 @@ public: // Event system.
 	}EventSystemData;
 	
 	UFUNCTION(BlueprintCallable, DisplayName="!RegisterEvent(C)")
-	void RegisterEvent(UU5_Event_ACC* _event);
+	void RegisterEvent(const UU5_Event_ACC* _event);
 
 	UFUNCTION(BlueprintCallable, DisplayName = "!UnRegisterEvent(C)")
-	void UnRegisterEvent(UU5_Event_ACC* _event);
+	void UnRegisterEvent(const UU5_Event_ACC* _event);
 
 	UFUNCTION(BlueprintCallable, DisplayName = "!SetEventValue(C, String)")
 	void SetEventValueS(const FString& _name, float _value);

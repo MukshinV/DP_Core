@@ -34,24 +34,25 @@ void UU5_EventSystem_ACC::EventHandleToString(FString& _result, const FDataTable
 	_result = (_handle.DataTable.GetName() + " : " + _handle.RowName.ToString());
 }
 
-void UU5_EventSystem_ACC::RegisterEvent(UU5_Event_ACC* _event)
+void UU5_EventSystem_ACC::RegisterEvent(const UU5_Event_ACC* _event)
 {
 	check(_event);
 	mU5_FUNCMESS(true, _event->GetReadableName());
-	EventSystemData.AddEvent(_event);
+	EventSystemData.AddEvent(const_cast<UU5_Event_ACC*>(_event));
 }
 
-void UU5_EventSystem_ACC::UnRegisterEvent(UU5_Event_ACC* _event)
+void UU5_EventSystem_ACC::UnRegisterEvent(const UU5_Event_ACC* _event)
 {
 	check(_event);
 	mU5_FUNCMESS(true, _event->GetReadableName());
-	for (FDataTableRowHandle& _handle : _event->ResponceList)
+	UU5_Event_ACC* event = const_cast<UU5_Event_ACC*>(_event);
+	for (FDataTableRowHandle& _handle : event->ResponceList)
 	{
 		FString eventTag; EventHandleToString(eventTag, _handle);
 		FEventHandlers* _handlers =  EventSystemData.GetEvents().Find(eventTag);
 		if (_handlers)
 		{
-			int32 element = _handlers->Events.Find(_event);
+			int32 element = _handlers->Events.Find(event);
 			if(element != INDEX_NONE)
 			{
 				_handlers->Events.RemoveAt(element);
@@ -62,6 +63,7 @@ void UU5_EventSystem_ACC::UnRegisterEvent(UU5_Event_ACC* _event)
 
 void UU5_EventSystem_ACC::SetEventValueS(const FString& _eventTag, float _value)
 {
+	mU5_FUNCMESS(true, _eventTag);
 	FEventHandlers* handleStruct = EventSystemData.Events.Find(_eventTag);
 	if (!handleStruct)
 	{
@@ -82,6 +84,7 @@ void UU5_EventSystem_ACC::SetEventValueH(const FDataTableRowHandle& _handle, flo
 
 float UU5_EventSystem_ACC::GetEventValueS(const FString& _name)
 {
+	mU5_FUNCMESS(true, _name);
 	if (const FEventHandlers* handlers = EventSystemData.GetEventHandlers(_name))
 	{
 		return handlers->Value;
@@ -95,8 +98,10 @@ float UU5_EventSystem_ACC::GetEventValueH(const FDataTableRowHandle& _handle)
 	return GetEventValueS(eventTag);
 }
 
-void UU5_EventSystem_ACC::FEventSystemData::AddEvent(UU5_Event_ACC* _event)
+void UU5_EventSystem_ACC::FEventSystemData::AddEvent(const UU5_Event_ACC* _event)
 {
+	mU5_FUNCTION(true);
+	UU5_Event_ACC* event = const_cast<UU5_Event_ACC*>(_event);
 	const UU5_Event_ACC::event_data_t eventData = _event->GetEventData();
 	for(const FDataTableRowHandle& element : eventData)
 	{
@@ -105,10 +110,11 @@ void UU5_EventSystem_ACC::FEventSystemData::AddEvent(UU5_Event_ACC* _event)
 		if(!handleStruct)
 		{
 			handleStruct = &Events.Add(eventTag, FEventHandlers());
-			NewEventDelegate->Broadcast(eventTag, _event);
+			NewEventDelegate->Broadcast(eventTag, event);
 		}
-		handleStruct->Events.AddUnique(_event);
-		_event->SetEventValue(eventTag, handleStruct->Value);
+		handleStruct->Events.AddUnique(event);
+		event->SetEventValue(eventTag, handleStruct->Value);
+		mU5_FUNCMESS(true, event->GetReadableName() + " bind " + eventTag);
 	};
 }
 

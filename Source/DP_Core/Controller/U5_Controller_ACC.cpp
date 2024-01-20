@@ -16,7 +16,7 @@ void UU5_Controller_ACC::BeginPlay()
 
 void UU5_Controller_ACC::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	mU5_FUNCTION(false, "EndPlay");
+	mU5_FUNCTION(false);
 	Super::EndPlay(EndPlayReason);
 	if (Controller->IsLocalController())
 	{

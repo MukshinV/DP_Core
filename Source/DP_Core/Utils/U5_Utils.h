@@ -19,7 +19,7 @@
 #define mQBRACED(text)	' "'	## text ##		'" '
 
 // TODO: FString strean or use standart tchar stream. printf style is kiiling me.
-#define mU5_FUNCTION(enable, text) { if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) U5::DebugMessage ( FString( __func__ ) + TEXT(text) ); }
+#define mU5_FUNCTION(enable) { if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) U5::DebugMessage ( FString( __func__ ) ); }
 #define mU5_FUNCMESS(enable, text) { if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) U5::DebugMessage ( FString( __func__ ) + ": " + text ); }
 #define mU5_DEBUGOUT(enable, text) { if(enable){U5::DebugMessage(text);} }
 
