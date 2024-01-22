@@ -2,6 +2,16 @@
 
 #include "U5_Utils.h"
 
+
+namespace U5_Log
+{
+	U5_LogStream& GetLogStream()
+	{
+		static U5_LogStream logStream{};
+		return logStream;
+	}
+}
+
 void U5_EasyLogInterface::SelfCheckModule()
 {
 	GLog->Log("Module is OK!");

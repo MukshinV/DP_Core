@@ -1,12 +1,17 @@
 // Copyright Epic Games, Inc. All Rights Reserved.
 
 #include "DP_Core.h"
+#include "Utils/U5_Utils.h"
 
 #define LOCTEXT_NAMESPACE "FDP_CoreModule"
 
 void FDP_CoreModule::StartupModule()
 {
-	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+	mU5_FUNCTION(true);
+	mU5_FUNCMESS(true, mQUOTED("Func") << " message " << "log. " << "DP_Core module started.");
+	mU5_FUNCMESS(false, mSBRACED("This func message log shouldn't be visible in log."));
+	mU5_DEBUGOUT(true, mBRACED("Debug") << " message " << "log. " << "DP_Core module started.");
+	mU5_DEBUGOUT(false, mSBRACED("This debug message shouldn't be visible in log."));
 }
 
 void FDP_CoreModule::ShutdownModule()

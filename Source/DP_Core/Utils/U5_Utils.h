@@ -2,7 +2,10 @@
 ///! Global utils for the U5 plugin.
 #include "CoreMinimal.h"
 #include "Kismet/BlueprintFunctionLibrary.h"
+#include "Kismet/KismetSystemLibrary.h"
 #include "U5_Utils.generated.h"
+
+inline FWideStringBuilderBase& operator<<(FWideStringBuilderBase& Builder, float Value) { return Builder.Appendf(WIDETEXT("%f"), Value); }
 
 #define U5_DO_DEBUG_LOG 1
 #ifndef U5_DEBUG_ENABLE
@@ -17,11 +20,34 @@
 #define mSBRACED(text)	" ["	## text ##		"] "
 #define mRBRACED(text)	" ("	## text ##		") "
 #define mQBRACED(text)	' "'	## text ##		'" '
+#define mDNAME(object) UKismetSystemLibrary::GetDisplayName(object)
+
+namespace U5_Log
+{
+	using U5_LogStream = TStringBuilder<1024>;
+	
+	U5_LogStream& GetLogStream();
+}
 
 // TODO: FString strean or use standart tchar stream. printf style is kiiling me.
 #define mU5_FUNCTION(enable) { if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) U5::DebugMessage ( FString( __func__ ) ); }
-#define mU5_FUNCMESS(enable, text) { if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) U5::DebugMessage ( FString( __func__ ) + ": " + text ); }
-#define mU5_DEBUGOUT(enable, text) { if(enable){U5::DebugMessage(text);} }
+#define mU5_FUNCMESS(enable, text) \
+{ \
+	if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) \
+	{ \
+		U5::DebugMessage(*(U5_Log::GetLogStream() << FString( __func__ ) << ": " << text)); \
+		U5_Log::GetLogStream().Reset(); \
+	} \
+}
+
+#define mU5_DEBUGOUT(enable, text) \
+{ \
+	if(enable) \
+	{ \
+		U5::DebugMessage(*(U5_Log::GetLogStream() << text)); \
+		U5_Log::GetLogStream().Reset(); \
+	} \
+}
 
 UCLASS()
 class DP_CORE_API U5_EasyLogInterface : public UBlueprintFunctionLibrary
@@ -55,3 +81,4 @@ class DP_CORE_API U5 : public U5_EasyLogInterface
 {
 	GENERATED_BODY()
 };
+
