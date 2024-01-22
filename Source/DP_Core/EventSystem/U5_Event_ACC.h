@@ -44,7 +44,7 @@ public: // Responce list.
 	UFUNCTION(DisplayName="!SetEventValue(float)")
 	void SetEventValue(const FString& _event, float _value);
 
-	UPROPERTY(BlueprintAssignable, DisplayName="cbEventChanged")
+	UPROPERTY(BlueprintAssignable, DisplayName="cbEvent")
 	FEventChangeDelegate OnEventChanged_Delegate;
 
 private: // Utility.
