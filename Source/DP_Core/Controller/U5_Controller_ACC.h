@@ -6,8 +6,12 @@
 #include "Components/ActorComponent.h"
 #include "U5_Controller_ACC.generated.h"
 
+class UU5_GameInstance;
+class UU5_Behavior_ACC;
 
-UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNewCurrentBahavior);
+
+UCLASS( Blueprintable, ClassGroup=(U5), meta=(BlueprintSpawnableComponent) )
 class DP_CORE_API UU5_Controller_ACC : public UActorComponent
 {
 	GENERATED_BODY()
@@ -15,16 +19,40 @@ class DP_CORE_API UU5_Controller_ACC : public UActorComponent
 public:	
 	UU5_Controller_ACC() 
 	{ 
-		PrimaryComponentTick.bCanEverTick = false; 
+		PrimaryComponentTick.bCanEverTick = false;
 	}
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 protected:
 	virtual void BeginPlay() override;
+	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+	virtual void PostInitProperties() override;
 
-public:
-	class UU5_Behavior_ACC;
-	UPROPERTY(DisplayName="@Cascade")
+public:	// Behavior cascade.
+	UPROPERTY(DisplayName="@BehaviorCascade")
 	TArray<UU5_Behavior_ACC*> BehaviorsCascade;
 
+public:// Local Player Controller.
+	UPROPERTY(VisibleAnywhere, DisplayName="@Controller")
+	APlayerController* Controller = nullptr;
+
+public: // Game Instance.
+	TObjectPtr<UU5_GameInstance> GameInstance = nullptr;
+	void OnRegisterByGameInst(const UU5_GameInstance* _gameInst);
+
+public: // Current Behavior.
+	UPROPERTY(BlueprintReadOnly, DisplayName="@CurrentBehavior")
+	UU5_Behavior_ACC* CurrentBehavior = nullptr;
+
+	UPROPERTY(BlueprintAssignable)
+	FNewCurrentBahavior cbNewBehavior;
+
+	UFUNCTION(BlueprintCallable, DisplayName="!RegisterCurrentBehavior()")
+	void RegisterCurrentBehavior(UU5_Behavior_ACC* _behavior);
+
+	UFUNCTION(DisplayName="!PossesSuccesed")
+	void OnPossesSucces(const UU5_Behavior_ACC* _behavior);
+
+private: // Internal staff.
+	void InitControllerInGI_Internal();
 };

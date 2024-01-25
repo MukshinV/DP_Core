@@ -1,8 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "U5_Event_ACC.h"
 #include "U5_EventSystem_ACC.h"
+
+#include "../Utils/U5_Utils.h"
 
 void UU5_Event_ACC::BeginPlay()
 {
@@ -49,6 +48,7 @@ UU5_EventSystem_ACC* UU5_Event_ACC::TryGetEventSystem()
 
 void UU5_Event_ACC::SetEventValue(const FString& _event, float _value)
 {
+	mU5_FUNCMESS(true, _event + FString::Printf(TEXT(" : %f. Owner: "), _value) + GetOwner()->GetHumanReadableName());
 	this->Value = _value;
 	OnEventChanged_Delegate.Broadcast(_event, _value, this);
 }

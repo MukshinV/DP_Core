@@ -17,7 +17,7 @@ struct FEventHandlers
 	GENERATED_BODY()
 
 	UPROPERTY()
-	float Value;
+	float Value {0.f};
 
 	UPROPERTY()
 	TArray<UU5_Event_ACC*> Events;
@@ -29,36 +29,38 @@ class DP_CORE_API UU5_EventSystem_ACC : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	// Sets default values for this component's properties
 	UU5_EventSystem_ACC()
 	{
 		PrimaryComponentTick.bCanEverTick = false;
 	}
 
+	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 protected:
 	virtual void BeginPlay() override;
 	virtual void OnComponentCreated() override;
 
-public:	
-	// Called every frame
-	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-public:
-	void CheckParent();
+public: // Utility.
 
 	//! Only a true way to convert handle to string for all project.
 	UFUNCTION()
 	static void EventHandleToString(FString& _result, const FDataTableRowHandle& _handle);
 
-public:
+public: // Event system.
+	// Event system contains: 
+	// FEventSystemData + FEventHandlers
+	// FEventSystemData->TMap<FString, FEventHandlers> Events; - the pair <EventKey(FString, FEventHandlers)>
+	// FEventHandlers - is array of this evet key abonents, that handle any this event value change.
 	UPROPERTY(BlueprintAssignable, DisplayName = "cbNewEvent")
 	FNewEventRegistredDelegate OnNewEventRegistred;
 
 	struct FEventSystemData
 	{
+	public: // Event handlers.
 		TMap<FString, FEventHandlers> Events;
 
-		void AddEvent(UU5_Event_ACC* _event);
+		void AddEvent(const UU5_Event_ACC* _event);
 		void RemoveEvent(const UU5_Event_ACC* _event);
 
 		void SetEventsValue() {}
@@ -66,18 +68,28 @@ public:
 		TMap<FString, FEventHandlers>& GetEvents() { return Events; }
 
 		FNewEventRegistredDelegate* NewEventDelegate = nullptr;
+
+		FEventHandlers* GetEventHandlers(const FString& _key);
 	}EventSystemData;
 	
-	UFUNCTION(BlueprintCallable, DisplayName="!RegisterEbvent()")
-	void RegisterEvent(UU5_Event_ACC* _event);
+	UFUNCTION(BlueprintCallable, DisplayName="!RegisterEvent(C)")
+	void RegisterEvent(const UU5_Event_ACC* _event);
 
-	UFUNCTION(BlueprintCallable, DisplayName = "!UnRegisterEbvent()")
-	void UnRegisterEvent(UU5_Event_ACC* _event);
+	UFUNCTION(BlueprintCallable, DisplayName = "!UnRegisterEvent(C)")
+	void UnRegisterEvent(const UU5_Event_ACC* _event);
 
-	UFUNCTION(BlueprintCallable, DisplayName = "!SetEventValue(String)")
+	UFUNCTION(BlueprintCallable, DisplayName = "!SetEventValue(C, String)")
 	void SetEventValueS(const FString& _name, float _value);
 
-	UFUNCTION(BlueprintCallable, DisplayName = "!SetEventValue(Handle)")
+	UFUNCTION(BlueprintCallable, DisplayName = "!SetEventValue(C, Handle)")
 	void SetEventValueH(const FDataTableRowHandle& _name, float _value);
 
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetEventValue(C, String)")
+	float GetEventValueS(const FString& _name);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetEventValue(C, Handle)")
+	float GetEventValueH(const FDataTableRowHandle& _name);
+
+private: // Internal staff.
+	void CheckParent_Internal();
 };
