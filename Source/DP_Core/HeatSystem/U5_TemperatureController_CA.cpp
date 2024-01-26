@@ -9,14 +9,27 @@ AU5_TemperatureController_CA::AU5_TemperatureController_CA()
 	PrimaryActorTick.bCanEverTick = false;
 }
 
-void AU5_TemperatureController_CA::BeginPlay()
+void AU5_TemperatureController_CA::UpdateSource(const FString& _sourceName, float _sourceValue)
 {
-	Super::BeginPlay();
+	FU5_TemperatureSource_Struct* foundTemperatureValue = CurrentSources.Find(_sourceName);
 	
+	if(foundTemperatureValue)
+	{
+		*foundTemperatureValue = FU5_TemperatureSource_Struct{_sourceValue };
+		return;
+	}
+
+	CurrentSources.Add(_sourceName, FU5_TemperatureSource_Struct{_sourceValue});
 }
 
-void AU5_TemperatureController_CA::Tick(float DeltaTime)
+float AU5_TemperatureController_CA::CalculateTotalTemperature() const
 {
-	Super::Tick(DeltaTime);
+	float totalTemperature = 0.0f;
+	for(const TTuple<FString, FU5_TemperatureSource_Struct>& _pair : CurrentSources)
+	{
+		totalTemperature += _pair.Value.SourceTemperature;
+	}
+	return totalTemperature;
 }
+
 

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EventSystem/U5_Event_ACC.h"
 #include "GameFramework/Actor.h"
 #include "U5_TemperatureController_CA.generated.h"
 
@@ -22,14 +23,8 @@ struct FU5_TemperatureSource_Struct
 {
 	GENERATED_BODY()
 public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@SourceName")
-	FString SourceName;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@SourceTemperature")
 	float SourceTemperature;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@SourceParameters")
-	FU5_TemperatureSourceParameters_Struct SourceParameters;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@IsRunning")
-	bool bIsRunning;
 };
 
 UCLASS(Blueprintable)
@@ -40,11 +35,12 @@ class DP_CORE_API AU5_TemperatureController_CA : public AActor
 public:
 	AU5_TemperatureController_CA();
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@TemperatureTable")
-	TObjectPtr<UDataTable> TemperatureTable;
 	UPROPERTY(BlueprintReadWrite, DisplayName="@CurrentTemperatureSources")
-	TArray<FU5_TemperatureSource_Struct> CurrentSources;
-	
-	virtual void BeginPlay() override;
-	virtual void Tick(float DeltaTime) override;
+	TMap<FString, FU5_TemperatureSource_Struct> CurrentSources;
+
+	UFUNCTION(BlueprintCallable, DisplayName="!UpdateSource(C)(String, float)")
+	void UpdateSource(const FString& _sourceName, float _sourceValue);
+	UFUNCTION(BlueprintCallable, DisplayName="!CalculateTotalTemperature(C)")
+	float CalculateTotalTemperature() const;
 };
+
