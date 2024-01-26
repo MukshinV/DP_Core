@@ -13,9 +13,18 @@ struct FU5_TemperatureSourceParameters_Struct : public FTableRowBase
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@TargetTemperature")
-	float TargetTemperature;
+	float TargetTemperature{};
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@TemperatureSpeed")
-	float TemperatureSpeed;
+	float TemperatureSpeed{};
+};
+
+USTRUCT(BlueprintType)
+struct FU5_TemperatureReceiverParameters_Struct : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@TargetTemperature")
+	float TargetTemperature{};
 };
 
 USTRUCT(BlueprintType)
@@ -24,7 +33,7 @@ struct FU5_TemperatureSource_Struct
 	GENERATED_BODY()
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@SourceTemperature")
-	float SourceTemperature;
+	float SourceTemperature{};
 };
 
 UCLASS(Blueprintable)
@@ -39,7 +48,7 @@ protected:
 	TMap<FString, FU5_TemperatureSource_Struct> CurrentSources;
 
 	UFUNCTION(BlueprintCallable, DisplayName="!UpdateSource(C)(String, float)")
-	void UpdateSource(const FString& _sourceName, float _sourceValue);
+	void UpdateSource(const FString& _sourceName, float _currentTemperature);
 	UFUNCTION(BlueprintCallable, DisplayName="!CalculateTotalTemperature(C)")
 	float CalculateTotalTemperature() const;
 };
