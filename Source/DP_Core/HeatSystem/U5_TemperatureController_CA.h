@@ -28,6 +28,15 @@ public:
 };
 
 USTRUCT(BlueprintType)
+struct FU5_EnvironmentTemperatureParameters_Struct : public FTableRowBase
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@EnvironmentTemperature")
+	float EnvironmentTemperature{};
+};
+
+USTRUCT(BlueprintType)
 struct FU5_TemperatureSource_Struct
 {
 	GENERATED_BODY()
@@ -46,7 +55,9 @@ public:
 protected:
 	UPROPERTY(BlueprintReadWrite, DisplayName="@CurrentTemperatureSources")
 	TMap<FString, FU5_TemperatureSource_Struct> CurrentSources;
-
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@DefaultTemperature")
+	float DefaultTemperature;
+	
 	UFUNCTION(BlueprintCallable, DisplayName="!UpdateSource(C)(String, float)")
 	void UpdateSource(const FString& _sourceName, float _currentTemperature);
 	UFUNCTION(BlueprintCallable, DisplayName="!CalculateTotalTemperature(C)")

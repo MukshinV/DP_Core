@@ -24,13 +24,16 @@ void AU5_TemperatureController_CA::UpdateSource(const FString& _sourceName, floa
 
 float AU5_TemperatureController_CA::CalculateTotalTemperature() const
 {
-	float totalTemperature = 0.0f;
+	float totalTemperature = DefaultTemperature;
+	
 	for(const TTuple<FString, FU5_TemperatureSource_Struct>& _pair : CurrentSources)
 	{
-		totalTemperature += _pair.Value.SourceTemperature;
+		const float sourceTemperature = _pair.Value.SourceTemperature; 
+		const float temperatureDelta = sourceTemperature - DefaultTemperature;
+		totalTemperature += temperatureDelta;
 	}
 	
-	return totalTemperature / CurrentSources.Num();
+	return totalTemperature;
 }
 
 
