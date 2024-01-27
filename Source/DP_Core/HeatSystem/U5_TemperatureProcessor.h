@@ -32,7 +32,7 @@ protected:
 	TObjectPtr<UCurveFloat> TemperatureCurve;
 private:
 	FU5_TemperatureSourceParameters_Struct SourceParameters;
-	float OutdoorTemperature;
+	float OutdoorTemperature{ 0.0f };
 	
 	struct TemperatureLerper
 	{

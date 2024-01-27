@@ -55,8 +55,6 @@ public:
 protected:
 	UPROPERTY(BlueprintReadWrite, DisplayName="@CurrentTemperatureSources")
 	TMap<FString, FU5_TemperatureSource_Struct> CurrentSources;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@DefaultTemperature")
-	float DefaultTemperature;
 	
 	UFUNCTION(BlueprintCallable, DisplayName="!UpdateSource(C)(String, float)")
 	void UpdateSource(const FString& _sourceName, float _currentTemperature);

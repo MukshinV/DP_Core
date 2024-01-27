@@ -24,16 +24,18 @@ void AU5_TemperatureController_CA::UpdateSource(const FString& _sourceName, floa
 
 float AU5_TemperatureController_CA::CalculateTotalTemperature() const
 {
-	float totalTemperature = DefaultTemperature;
+	float maxTemperature = 0.0f;
+	float minTemperature = 0.0f;
 	
 	for(const TTuple<FString, FU5_TemperatureSource_Struct>& _pair : CurrentSources)
 	{
-		const float sourceTemperature = _pair.Value.SourceTemperature; 
-		const float temperatureDelta = sourceTemperature - DefaultTemperature;
-		totalTemperature += temperatureDelta;
+		const float sourceTemperature = _pair.Value.SourceTemperature;
+
+		maxTemperature = FMath::Max(maxTemperature, sourceTemperature);
+		minTemperature = FMath::Min(minTemperature, sourceTemperature);
 	}
 	
-	return totalTemperature;
+	return maxTemperature + minTemperature;
 }
 
 
