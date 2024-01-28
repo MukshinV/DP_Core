@@ -25,15 +25,8 @@ struct FU5_TemperatureReceiverParameters_Struct : public FTableRowBase
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@TargetTemperature")
 	float TargetTemperature{};
-};
-
-USTRUCT(BlueprintType)
-struct FU5_EnvironmentTemperatureParameters_Struct : public FTableRowBase
-{
-	GENERATED_BODY()
-public:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@EnvironmentTemperature")
-	float EnvironmentTemperature{};
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@SpeedModifier")
+	float SpeedModifier{1.0f};
 };
 
 USTRUCT(BlueprintType)
