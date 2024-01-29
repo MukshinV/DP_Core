@@ -28,7 +28,7 @@ void UU5_TemperatureProcessor::StartDownTemperature()
 
 float UU5_TemperatureProcessor::GetCurrentTemperature() const
 {
-	return FMath::Lerp(*TemperatureLerper.FromValue, *TemperatureLerper.ToValue,  TemperatureCurve->GetFloatValue(TemperatureLerper.Ratio));
+	return FMath::Lerp(TemperatureLerper.FromValue, TemperatureLerper.ToValue,  TemperatureCurve->GetFloatValue(TemperatureLerper.Ratio));
 }
 
 void UU5_TemperatureProcessor::UpdateTemperature(float _deltaSeconds)

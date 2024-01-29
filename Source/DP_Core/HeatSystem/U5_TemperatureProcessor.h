@@ -17,8 +17,6 @@ public:
 	bool IsTemperatureProcessingFinished() const { return TemperatureLerper.Ratio >= 0.999f; }
 	UFUNCTION(BlueprintCallable, DisplayName="!SetTemperatureParameters(C)(float)")
 	void SetTemperatureParameters(const FU5_TemperatureSourceParameters_Struct& _sourceParameters);
-	UFUNCTION(BlueprintCallable, DisplayName="!SetOutdoorTemperature(C)(float)")
-	void SetOutdoorTemperature(float _outdoorTemperature) { OutdoorTemperature = _outdoorTemperature; }
 	UFUNCTION(BlueprintCallable, DisplayName="!StartUpTemperature(C)")
 	void StartUpTemperature();
 	UFUNCTION(BlueprintCallable, DisplayName="!StartDownTemperature(C)")
@@ -36,13 +34,13 @@ private:
 	
 	struct TemperatureLerper
 	{
-		float* FromValue;
-		float* ToValue;
-		float Ratio;
+		float FromValue;
+		float ToValue;
+		float Ratio{1.0f};
 		
-		void SetFromValue(float& _fromValue) { FromValue = &_fromValue; }
-		void SetToValue(float& _toValue) { ToValue = &_toValue; }
+		void SetFromValue(float _fromValue) { FromValue = _fromValue; }
+		void SetToValue(float _toValue) { ToValue = _toValue; }
 		void AddRatioValue(float _addValue) { Ratio = FMath::Min(1.0f, Ratio + _addValue); };
-		void ResetRatio() { Ratio = 0.0f; }
+		void ResetRatio() { Ratio = 1.0f - Ratio; }
 	} TemperatureLerper;
 };
