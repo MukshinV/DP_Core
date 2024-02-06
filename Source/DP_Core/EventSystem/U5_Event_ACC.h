@@ -18,7 +18,8 @@ public:
 
 #pragma region Default
 public:	
-	UU5_Event_ACC()
+	UU5_Event_ACC(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get())
+		:Super(ObjectInitializer)
 	{
 		PrimaryComponentTick.bCanEverTick = false;
 	}

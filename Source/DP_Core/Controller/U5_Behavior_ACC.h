@@ -3,6 +3,9 @@
 #include "CoreMinimal.h"
 #include "Components/ActorComponent.h"
 #include "Net/UnrealNetwork.h"
+
+#include "../EventSystem/U5_Event_ACC.h"
+
 #include "U5_Behavior_ACC.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNewController);
@@ -10,7 +13,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE(FNewController);
 class UU5_Controller_ACC;
 
 UCLASS( Blueprintable )
-class DP_CORE_API UU5_Behavior_ACC : public UActorComponent
+class DP_CORE_API UU5_Behavior_ACC : public UU5_Event_ACC
 {
 	GENERATED_BODY()
 

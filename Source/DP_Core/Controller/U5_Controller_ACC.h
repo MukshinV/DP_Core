@@ -17,7 +17,8 @@ class DP_CORE_API UU5_Controller_ACC : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	UU5_Controller_ACC() 
+	UU5_Controller_ACC(const FObjectInitializer& ObjectInitializer = FObjectInitializer::Get())
+		:Super(ObjectInitializer)
 	{ 
 		PrimaryComponentTick.bCanEverTick = false;
 	}
