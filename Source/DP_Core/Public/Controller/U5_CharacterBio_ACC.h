@@ -47,7 +47,7 @@ public: // Attributes
 public: // Team
 
 	UFUNCTION(BlueprintCallable, Category = "Team", DisplayName = "!SetGenericTeamId()")
-	FORCEINLINE void SetGenericTeamId(const FGenericTeamId& _teamId);
+	void SetGenericTeamId(const FGenericTeamId& _teamId);
 
 	UFUNCTION(BlueprintPure, Category = "Team", DisplayName = "!GetGenericTeamId()")
 	FORCEINLINE FGenericTeamId GetGenericTeamId() const { return TeamId; }
