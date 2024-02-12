@@ -33,7 +33,7 @@ protected:
 	virtual void EndPlay(const EEndPlayReason::Type _reason) override;
 
 public: // Responce list.
-	UPROPERTY(EditAnywhere, DisplayName = "@ResponceList", Category = "‼Event")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "@ResponceList", Category = "‼Event")
 	TArray<FDataTableRowHandle> ResponceList;
 
 	const event_data_t& GetEventData() const { return ResponceList; }
