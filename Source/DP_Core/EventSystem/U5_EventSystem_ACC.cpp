@@ -10,6 +10,14 @@ void UU5_EventSystem_ACC::BeginPlay()
 {
 	Super::BeginPlay();
 	CheckParent_Internal();
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick( 
+		[this] ()
+		{
+			mU5_DEBUGOUT(false, "Saves loaded");
+			EventSystemData.IsSavesLoaded = true; 
+		}
+	);
 }
 
 void UU5_EventSystem_ACC::OnComponentCreated()
@@ -110,7 +118,10 @@ void UU5_EventSystem_ACC::FEventSystemData::AddEvent(const UU5_Event_ACC* _event
 		if(!handleStruct)
 		{
 			handleStruct = &Events.Add(eventTag, FEventHandlers());
-			NewEventDelegate->Broadcast(eventTag, event);
+			if(IsSavesLoaded)
+			{
+				NewEventDelegate->Broadcast(eventTag, event);
+			}
 		}
 		handleStruct->Events.AddUnique(event);
 		event->SetEventValue(eventTag, handleStruct->Value);

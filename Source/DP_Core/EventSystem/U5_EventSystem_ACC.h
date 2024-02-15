@@ -32,6 +32,7 @@ public:
 	UU5_EventSystem_ACC()
 	{
 		PrimaryComponentTick.bCanEverTick = false;
+		EventSystemData.IsSavesLoaded = 0x0;
 	}
 
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
@@ -70,6 +71,7 @@ public: // Event system.
 		FNewEventRegistredDelegate* NewEventDelegate = nullptr;
 
 		FEventHandlers* GetEventHandlers(const FString& _key);
+		uint8 IsSavesLoaded : 1;
 	}EventSystemData;
 	
 	UFUNCTION(BlueprintCallable, DisplayName="!RegisterEvent(C)")
