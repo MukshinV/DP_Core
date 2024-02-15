@@ -118,14 +118,12 @@ void UU5_EventSystem_ACC::FEventSystemData::AddEvent(const UU5_Event_ACC* _event
 		if(!handleStruct)
 		{
 			handleStruct = &Events.Add(eventTag, FEventHandlers());
-			if(IsSavesLoaded)
-			{
-				NewEventDelegate->Broadcast(eventTag, event);
-			}
+			if(IsSavesLoaded) NewEventDelegate->Broadcast(eventTag, event);
 		}
 		handleStruct->Events.AddUnique(event);
-		event->SetEventValue(eventTag, handleStruct->Value);
-		mU5_FUNCMESS(true, event->GetReadableName() + " bind " + eventTag);
+		if(IsSavesLoaded) event->SetEventValue(eventTag, handleStruct->Value);
+
+		mU5_FUNCMESS(false, event->GetReadableName() + " bind " + eventTag);
 	};
 }
 
