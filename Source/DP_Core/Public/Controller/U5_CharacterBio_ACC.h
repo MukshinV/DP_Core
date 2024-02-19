@@ -8,23 +8,68 @@
 
 #include "U5_CharacterBio_ACC.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDeathDelegate);
 
-UCLASS(Blueprintable, ClassGroup=(Custom), meta=(BlueprintSpawnableComponent))
+class UU5_CharacterBio_ACC;
+
+class Attribute_Health
+{
+	UU5_CharacterBio_ACC* This;
+	UU5_CharacterBio_ACC* GetOwner() { return This; }
+
+public:
+	Attribute_Health() : This(nullptr) {}
+	Attribute_Health(UU5_CharacterBio_ACC* _this) { This = _this; }
+
+public: // Health
+	UPROPERTY(VisibleAnywhere, DisplayName="@Health")
+	float Health = 100;
+
+	UPROPERTY(VisibleAnywhere, DisplayName = "@HealthLimit")
+	FVector2D Limit { 0, 100 };
+
+	UFUNCTION(BlueprintCallable, DisplayName="!HealthModify(C, Virtual)")
+	void Modify(bool Positive, float Value);
+
+	UFUNCTION(BlueprintCallable, DisplayName="!HealthGet(C, Virtual)")
+	float Get() const ;
+
+private:
+	void Check_Internal();
+};
+
+UCLASS(Blueprintable)
 class DP_CORE_API UU5_CharacterBio_ACC : public UActorComponent
 {
 	GENERATED_BODY()
 
 public:	
-	UU5_CharacterBio_ACC() {}
+	UU5_CharacterBio_ACC() : Health(this) 
+	{
+		PrimaryComponentTick.bCanEverTick = false;
+	}
 
 
-public: // Attributes
+public: // Attribute Health
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@Health"))
-	float Health;
+	Attribute_Health Health;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@HealthLimits"))
-	FVector2D HealthLimits;
+	UFUNCTION(BlueprintCallable, DisplayName="!HealthModify(C, Virtual)")
+	void HealthModify(bool Positive, float Value);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetHealth(C, Virtual)")
+	float GetHealth() const { return Health.Get(); }
+
+	void OnHealthChange(float Value);
+	void OnDeathBecame();
+
+	UPROPERTY(BlueprintAssignable, VisibleAnywhere)
+	FDeathDelegate cbDeath;
+
+
+
+
+public: // Attribute Stamina
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@Stamina"))
 	float Stamina;
@@ -32,11 +77,15 @@ public: // Attributes
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@StaminaLimits"))
 	FVector2D StaminaLimits;
 
+public: // Attribute Heat
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@Heat"))
 	float Heat;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@HeatLimits"))
 	FVector2D HeatLimits;
+
+public: // Attribute Sanity
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@Sanity"))
 	float Sanity;
