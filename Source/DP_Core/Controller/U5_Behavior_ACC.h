@@ -58,6 +58,11 @@ public: // Input Events.
 	UFUNCTION(BlueprintCallable)
 	bool HandleInputEvent() { return false; }
 
+public: // Gameplay reports.
+
+	UFUNCTION(BlueprintImplementableEvent, DisplayName="Report_OnThisBehaviorspawnIsDead(Virtual)", Category = "Reports")
+	void Report_OnThisBehaviorspawnIsDead();
+
 private: // Internal staff.
 	void InitBehaviorInGI_Internal();
 };

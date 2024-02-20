@@ -66,7 +66,8 @@ public: // Attribute Health
 	UPROPERTY(BlueprintAssignable, VisibleAnywhere)
 	FDeathDelegate cbDeath;
 
-
+	UFUNCTION(BlueprintImplementableEvent, DisplayName="!OnDeath(Virtual)")
+	void OnDeath();
 
 
 public: // Attribute Stamina
