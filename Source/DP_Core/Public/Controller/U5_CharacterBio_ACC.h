@@ -55,7 +55,7 @@ public: // Attribute Health
 	Attribute_Health Health;
 
 	UFUNCTION(BlueprintCallable, DisplayName="!HealthModify(C, Virtual)")
-	void HealthModify(bool Positive, float Value);
+	float HealthModify(bool Positive, float Value);
 
 	UFUNCTION(BlueprintCallable, DisplayName = "!GetHealth(C, Virtual)")
 	float GetHealth() const { return Health.Get(); }

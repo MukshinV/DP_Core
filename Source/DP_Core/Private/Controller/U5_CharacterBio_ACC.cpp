@@ -3,9 +3,10 @@
 #include "Controller/U5_CharacterBio_ACC.h"
 #include "GenericPlatform/GenericPlatformMath.h"
 
-void UU5_CharacterBio_ACC::HealthModify(bool Positive, float Value)
+float UU5_CharacterBio_ACC::HealthModify(bool Positive, float Value)
 {
 	Health.Modify(Positive, Value);
+	return Health.Health;
 }
 
 void UU5_CharacterBio_ACC::OnHealthChange(float Value)
