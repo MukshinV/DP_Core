@@ -50,6 +50,14 @@ public:
 	}
 
 
+public: // Death
+	UFUNCTION(BlueprintPure, DisplayName = "!IsDead()", Category = "Death")
+	FORCEINLINE bool IsDead() const { return bDead; }
+
+protected:
+	bool bDead{ false };
+
+
 public: // Attribute Health
 
 	Attribute_Health Health;

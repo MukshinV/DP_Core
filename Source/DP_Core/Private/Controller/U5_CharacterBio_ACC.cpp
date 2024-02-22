@@ -16,8 +16,11 @@ void UU5_CharacterBio_ACC::OnHealthChange(float Value)
 
 void UU5_CharacterBio_ACC::OnDeathBecame()
 {
+	bDead = true;
+
 	cbDeath.Broadcast();
 	OnDeath();
+
 	UU5_Behavior_ACC* beh = GetOwner()->FindComponentByClass<UU5_Behavior_ACC>();
 	if (beh)
 	{
@@ -60,6 +63,7 @@ void Attribute_Health::Check_Internal()
 	if (Health < Limit.X)
 	{
 		This->OnDeathBecame();
+
 		return;
 	}
 
