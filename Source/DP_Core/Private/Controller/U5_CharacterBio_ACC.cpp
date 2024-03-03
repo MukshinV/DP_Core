@@ -3,15 +3,14 @@
 #include "../Controller/U5_Behavior_ACC.h"
 #include "GenericPlatform/GenericPlatformMath.h"
 
-float UU5_CharacterBio_ACC::HealthModify(bool Positive, float Value)
+float UU5_CharacterBio_ACC::HealthModify(bool _positive, float _value)
 {
-	Health.Modify(Positive, Value);
+	Health.Modify(_positive, _value);
 	return Health.Health;
 }
 
-void UU5_CharacterBio_ACC::OnHealthChange(float Value)
+void UU5_CharacterBio_ACC::OnHealthChanged_Implementation(float Value, float NormalizedValue)
 {
-	
 }
 
 void UU5_CharacterBio_ACC::OnDeathBecame()
@@ -26,6 +25,16 @@ void UU5_CharacterBio_ACC::OnDeathBecame()
 	{
 		beh->Report_OnThisBehaviorspawnIsDead();
 	}
+}
+
+float UU5_CharacterBio_ACC::HeatModify(bool _positive, float _value)
+{
+	Heat.Modify(_positive, _value);
+	return Heat.Heat;
+}
+
+void UU5_CharacterBio_ACC::OnHeatChanged_Implementation(float Value, float NormalizedValue)
+{
 }
 
 void UU5_CharacterBio_ACC::SetGenericTeamId(const FGenericTeamId& _teamId)
@@ -68,5 +77,26 @@ void Attribute_Health::Check_Internal()
 	}
 
 	Health = FGenericPlatformMath::Min(Health, Limit.Y);
-	This->OnHealthChange(Health);
+
+	const float limitRange = Limit.Y - Limit.X; 
+	This->OnHealthChanged(Health, Health / limitRange);
+}
+
+void Attribute_Heat::Modify(bool Positive, float Value)
+{
+	(Positive) ? Heat += Value : Heat -= Value;
+	Check_Internal();
+}
+
+float Attribute_Heat::Get() const
+{
+	return Heat;
+}
+
+void Attribute_Heat::Check_Internal()
+{
+	Heat = FMath::Clamp(Heat, Limit.X, Limit.Y);
+
+	const float limitRange = Limit.Y - Limit.X; 
+	This->OnHeatChanged(Heat, Heat / limitRange);
 }

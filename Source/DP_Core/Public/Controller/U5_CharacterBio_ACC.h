@@ -14,9 +14,6 @@ class UU5_CharacterBio_ACC;
 
 class Attribute_Health
 {
-	UU5_CharacterBio_ACC* This;
-	UU5_CharacterBio_ACC* GetOwner() { return This; }
-
 public:
 	Attribute_Health() : This(nullptr) {}
 	Attribute_Health(UU5_CharacterBio_ACC* _this) { This = _this; }
@@ -32,9 +29,40 @@ public: // Health
 	void Modify(bool Positive, float Value);
 
 	UFUNCTION(BlueprintCallable, DisplayName="!HealthGet(C, Virtual)")
-	float Get() const ;
+	float Get() const;
 
 private:
+	UPROPERTY()
+	UU5_CharacterBio_ACC* This;
+	
+	void Check_Internal();
+	UU5_CharacterBio_ACC* GetOwner() const { return This; }
+};
+
+class Attribute_Heat
+{
+public:
+	Attribute_Heat() : This(nullptr) {}
+	Attribute_Heat(UU5_CharacterBio_ACC* _this) { This = _this; }
+
+public: // Heat
+	UPROPERTY(VisibleAnywhere, DisplayName="@Heat")
+	float Heat = 100;
+
+	UPROPERTY(VisibleAnywhere, DisplayName = "@HeatLimit")
+	FVector2D Limit { 0, 100 };
+
+	UFUNCTION(BlueprintCallable, DisplayName="!HeatModify(C, Virtual)")
+	void Modify(bool Positive, float Value);
+
+	UFUNCTION(BlueprintCallable, DisplayName="!HeatGet(C, Virtual)")
+	float Get() const;
+
+private:
+	UPROPERTY()
+	UU5_CharacterBio_ACC* This;
+	
+	UU5_CharacterBio_ACC* GetOwner() const { return This; }
 	void Check_Internal();
 };
 
@@ -44,7 +72,9 @@ class DP_CORE_API UU5_CharacterBio_ACC : public UActorComponent
 	GENERATED_BODY()
 
 public:	
-	UU5_CharacterBio_ACC() : Health(this) 
+	UU5_CharacterBio_ACC() :
+		Health(this),
+		Heat(this)
 	{
 		PrimaryComponentTick.bCanEverTick = false;
 	}
@@ -63,12 +93,14 @@ public: // Attribute Health
 	Attribute_Health Health;
 
 	UFUNCTION(BlueprintCallable, DisplayName="!HealthModify(C, Virtual)")
-	float HealthModify(bool Positive, float Value);
+	virtual float HealthModify(bool _positive, float _value);
 
 	UFUNCTION(BlueprintCallable, DisplayName = "!GetHealth(C, Virtual)")
-	float GetHealth() const { return Health.Get(); }
+	virtual float GetHealth() const { return Health.Get(); }
 
-	void OnHealthChange(float Value);
+	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnHealthChanged(Virtual)")
+	void OnHealthChanged(float Value, float NormalizedValue);
+
 	void OnDeathBecame();
 
 	UPROPERTY(BlueprintAssignable, VisibleAnywhere)
@@ -88,11 +120,19 @@ public: // Attribute Stamina
 
 public: // Attribute Heat
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@Heat"))
-	float Heat;
+	Attribute_Heat Heat;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@HeatLimits"))
-	FVector2D HeatLimits;
+	UFUNCTION(BlueprintCallable, DisplayName="!HeatModify(C, Virtual)")
+	virtual float HeatModify(bool _positive, float _value);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetHeat(C, Virtual)")
+	virtual float GetHeat() const { return Heat.Get(); }
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetHeatLimits(C)")
+	FVector2D GetHeatLimits() const { return Heat.Limit; }
+
+	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnHeatChanged(Virtual)")
+	void OnHeatChanged(float Value, float NormalizedValue);
 
 public: // Attribute Sanity
 
