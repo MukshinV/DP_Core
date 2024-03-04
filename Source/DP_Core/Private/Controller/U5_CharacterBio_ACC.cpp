@@ -2,6 +2,7 @@
 #include "../Utils/U5_Utils.h"
 #include "../Controller/U5_Behavior_ACC.h"
 #include "GenericPlatform/GenericPlatformMath.h"
+#include "Kismet/KismetMathLibrary.h"
 
 float UU5_CharacterBio_ACC::HealthModify(bool _positive, float _value)
 {
@@ -78,8 +79,8 @@ void Attribute_Health::Check_Internal()
 
 	Health = FGenericPlatformMath::Min(Health, Limit.Y);
 
-	const float limitRange = Limit.Y - Limit.X; 
-	This->OnHealthChanged(Health, Health / limitRange);
+	const float normalizedValue = FMath::GetRangePct<float, float>(Limit.X, Limit.Y, Health); 
+	This->OnHealthChanged(Health, normalizedValue);
 }
 
 void Attribute_Heat::Modify(bool Positive, float Value)
@@ -97,6 +98,6 @@ void Attribute_Heat::Check_Internal()
 {
 	Heat = FMath::Clamp(Heat, Limit.X, Limit.Y);
 
-	const float limitRange = Limit.Y - Limit.X; 
-	This->OnHeatChanged(Heat, Heat / limitRange);
+	const float normalizedValue = FMath::GetRangePct<float, float>( Limit.X, Limit.Y, Heat); 
+	This->OnHeatChanged(Heat, normalizedValue);
 }
