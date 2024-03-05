@@ -39,6 +39,36 @@ private:
 	UU5_CharacterBio_ACC* GetOwner() const { return This; }
 };
 
+class Attribute_Stamina
+{
+public:
+	Attribute_Stamina() : This(nullptr) {}
+	Attribute_Stamina(UU5_CharacterBio_ACC* _this) { This = _this; }
+
+public:
+	UPROPERTY(VisibleAnywhere, DisplayName="@Stamina")
+	float Stamina = 100;
+
+	UPROPERTY(VisibleAnywhere, DisplayName = "@StaminaLimit")
+	FVector2D Limit { 0, 100 };
+
+	UFUNCTION(BlueprintCallable, DisplayName="!StaminaModify(C, Virtual)")
+	void Modify(bool Positive, float Value);
+
+	UFUNCTION(BlueprintCallable, DisplayName="!StaminaGet(C, Virtual)")
+	float Get() const;
+
+	UFUNCTION(BlueprintCallable, DisplayName="!StaminaGetNormalized(C, Virtual)")
+	float GetNormalized() const;
+
+private:
+	UPROPERTY()
+	UU5_CharacterBio_ACC* This;
+	
+	UU5_CharacterBio_ACC* GetOwner() const { return This; }
+	void Check_Internal();
+};
+
 class Attribute_Heat
 {
 public:
@@ -53,7 +83,7 @@ public: // Heat
 	FVector2D Limit { 0, 100 };
 
 	UFUNCTION(BlueprintCallable, DisplayName="!HeatModify(C, Virtual)")
-	void Modify(bool Positive, float Value);
+	void Modify(bool _positive, float _value);
 
 	UFUNCTION(BlueprintCallable, DisplayName="!HeatGet(C, Virtual)")
 	float Get() const;
@@ -63,7 +93,7 @@ private:
 	UU5_CharacterBio_ACC* This;
 	
 	UU5_CharacterBio_ACC* GetOwner() const { return This; }
-	void Check_Internal();
+	void Check_Internal(float _incomingValue);
 };
 
 UCLASS(Blueprintable)
@@ -74,6 +104,7 @@ class DP_CORE_API UU5_CharacterBio_ACC : public UActorComponent
 public:	
 	UU5_CharacterBio_ACC() :
 		Health(this),
+		Stamina(this),
 		Heat(this)
 	{
 		PrimaryComponentTick.bCanEverTick = false;
@@ -91,6 +122,9 @@ protected:
 public: // Attribute Health
 
 	Attribute_Health Health;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@HealthDamageFromFreezingPercent")
+	float HealthDamageFromFreezingPercent = 0.05f;
 
 	UFUNCTION(BlueprintCallable, DisplayName="!HealthModify(C, Virtual)")
 	virtual float HealthModify(bool _positive, float _value);
@@ -112,11 +146,25 @@ public: // Attribute Health
 
 public: // Attribute Stamina
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@Stamina"))
-	float Stamina;
+	Attribute_Stamina Stamina;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, meta = (DisplayName = "@StaminaLimits"))
-	FVector2D StaminaLimits;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@StaminaDamageFromFreezingPercent")
+	float StamingDamageFromFreezingPercent = 0.015f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@StaminaRestorePercent")
+	float StamingRestorePercent = 0.05f;
+	
+	UFUNCTION(BlueprintCallable, DisplayName="!StaminaModify(C, Virtual)")
+	virtual float StaminaModify(bool _positive, float _value);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetStamina(C, Virtual)")
+	virtual float GetStamina() const { return Stamina.Get(); }
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetStaminaLimits(C)")
+	FVector2D GetStaminaLimits() const { return Stamina.Limit; }
+
+	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnStaminaChanged(Virtual)")
+	void OnStaminaChanged(float Value, float NormalizedValue);
 
 public: // Attribute Heat
 
@@ -132,7 +180,7 @@ public: // Attribute Heat
 	FVector2D GetHeatLimits() const { return Heat.Limit; }
 
 	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnHeatChanged(Virtual)")
-	void OnHeatChanged(float Value, float NormalizedValue);
+	void OnHeatChanged(float _value, float _normalizedValue, float _incomingValue);
 
 public: // Attribute Sanity
 

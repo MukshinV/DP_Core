@@ -28,15 +28,33 @@ void UU5_CharacterBio_ACC::OnDeathBecame()
 	}
 }
 
+float UU5_CharacterBio_ACC::StaminaModify(bool _positive, float _value)
+{
+	Stamina.Modify(_positive, _value);
+	return Stamina.Stamina;
+}
+
 float UU5_CharacterBio_ACC::HeatModify(bool _positive, float _value)
 {
 	Heat.Modify(_positive, _value);
 	return Heat.Heat;
 }
 
-void UU5_CharacterBio_ACC::OnHeatChanged_Implementation(float Value, float NormalizedValue)
+void UU5_CharacterBio_ACC::OnHeatChanged_Implementation(float _value, float _normalizedValue, float _incomingValue)
 {
+	const float deltaSeconds = GetWorld()->DeltaTimeSeconds;
+	
+	if(_incomingValue < 0.0f)
+	{
+		const float staminaDamage = Stamina.Limit.Y * StamingDamageFromFreezingPercent * deltaSeconds;
+		StaminaModify(false, staminaDamage);
+		return;
+	}
+
+	const float staminaRestoreValue = Stamina.Limit.Y * StamingRestorePercent * deltaSeconds;
+	StaminaModify(true, staminaRestoreValue);
 }
+
 
 void UU5_CharacterBio_ACC::SetGenericTeamId(const FGenericTeamId& _teamId)
 {
@@ -83,10 +101,46 @@ void Attribute_Health::Check_Internal()
 	This->OnHealthChanged(Health, normalizedValue);
 }
 
-void Attribute_Heat::Modify(bool Positive, float Value)
+void Attribute_Stamina::Modify(bool Positive, float Value)
 {
-	(Positive) ? Heat += Value : Heat -= Value;
+	(Positive) ? Stamina += Value : Stamina -= Value;
 	Check_Internal();
+}
+
+float Attribute_Stamina::Get() const
+{
+	return Stamina;
+}
+
+float Attribute_Stamina::GetNormalized() const
+{
+	return FMath::GetRangePct<float, float>( Limit.X, Limit.Y, Stamina);
+}
+
+void Attribute_Stamina::Check_Internal()
+{
+	Stamina = FMath::Clamp(Stamina, Limit.X, Limit.Y);
+
+	const float normalizedValue = GetNormalized();
+	This->OnStaminaChanged(Stamina, normalizedValue);
+}
+
+void UU5_CharacterBio_ACC::OnStaminaChanged_Implementation(float Value, float NormalizedValue)
+{
+	if(NormalizedValue <= 0.3f)
+	{
+		const float deltaTime = GetWorld()->DeltaTimeSeconds;
+		const float healthDamageValue = Health.Limit.Y * HealthDamageFromFreezingPercent * deltaTime; 
+		HealthModify(false, healthDamageValue);
+	}
+}
+
+void Attribute_Heat::Modify(bool _positive, float _value)
+{
+	const float multiplySign = _positive ? 1.0f : -1.0f;
+	const float incomingValue = _value * multiplySign; 
+	Heat += incomingValue;
+	Check_Internal(incomingValue);
 }
 
 float Attribute_Heat::Get() const
@@ -94,10 +148,10 @@ float Attribute_Heat::Get() const
 	return Heat;
 }
 
-void Attribute_Heat::Check_Internal()
+void Attribute_Heat::Check_Internal(float _incomingValue)
 {
 	Heat = FMath::Clamp(Heat, Limit.X, Limit.Y);
 
 	const float normalizedValue = FMath::GetRangePct<float, float>( Limit.X, Limit.Y, Heat); 
-	This->OnHeatChanged(Heat, normalizedValue);
+	This->OnHeatChanged(Heat, normalizedValue, _incomingValue);
 }
