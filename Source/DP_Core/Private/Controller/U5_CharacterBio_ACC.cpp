@@ -30,8 +30,32 @@ void UU5_CharacterBio_ACC::OnDeathBecame()
 
 float UU5_CharacterBio_ACC::StaminaModify(bool _positive, float _value)
 {
-	Stamina.Modify(_positive, _value);
+	Stamina.ModifyStaminaValue(_positive, _value);
 	return Stamina.Stamina;
+}
+
+float UU5_CharacterBio_ACC::StaminaCapacityModify(bool _positive, float _value)
+{
+	Stamina.ModifyStaminaCapacity(_positive, _value);
+
+	if(Stamina.Stamina > Stamina.Capacity)
+	{
+		const float difference = Stamina.Capacity - Stamina.Stamina; 
+		Stamina.ModifyStaminaValue(false, difference);
+	}
+	
+	return Stamina.Capacity;
+}
+
+void UU5_CharacterBio_ACC::OnStaminaCapacityChanged_Implementation(float _value, float _normalizedValue)
+{
+	const float deltaSeconds = GetWorld()->DeltaTimeSeconds;
+
+	if(FMath::IsNearlyEqual(_value, Stamina.CapacityLimit.X, 0.001f))
+	{
+		const float healthDamageValue = Health.Limit.Y * HealthDamageFromFreezingPercent * deltaSeconds; 
+		HealthModify(false, healthDamageValue);
+	}
 }
 
 float UU5_CharacterBio_ACC::HeatModify(bool _positive, float _value)
@@ -42,17 +66,6 @@ float UU5_CharacterBio_ACC::HeatModify(bool _positive, float _value)
 
 void UU5_CharacterBio_ACC::OnHeatChanged_Implementation(float _value, float _normalizedValue, float _incomingValue)
 {
-	const float deltaSeconds = GetWorld()->DeltaTimeSeconds;
-	
-	if(_incomingValue < 0.0f)
-	{
-		const float staminaDamage = Stamina.Limit.Y * StamingDamageFromFreezingPercent * deltaSeconds;
-		StaminaModify(false, staminaDamage);
-		return;
-	}
-
-	const float staminaRestoreValue = Stamina.Limit.Y * StamingRestorePercent * deltaSeconds;
-	StaminaModify(true, staminaRestoreValue);
 }
 
 
@@ -75,9 +88,11 @@ ETeamAttitude::Type UU5_CharacterBio_ACC::GetTeamAttitudeTowards(const AActor* _
 	return TeamId.GetAttitude(GetGenericTeamId(), bioComponent->GetGenericTeamId());
 }
 
-void Attribute_Health::Modify(bool Positive, float Value)
+void Attribute_Health::Modify(bool _positive, float _value)
 {
-	(Positive) ? Health += Value : Health -= Value;
+	if(FMath::IsNearlyZero(_value)) return;
+	
+	(_positive) ? Health += _value : Health -= _value;
 	Check_Internal();
 }
 
@@ -101,38 +116,58 @@ void Attribute_Health::Check_Internal()
 	This->OnHealthChanged(Health, normalizedValue);
 }
 
-void Attribute_Stamina::Modify(bool Positive, float Value)
+void Attribute_Stamina::ModifyStaminaValue(bool _positive, float _value)
 {
-	(Positive) ? Stamina += Value : Stamina -= Value;
-	Check_Internal();
+	if(FMath::IsNearlyZero(_value)) return;
+	
+	(_positive) ? Stamina += _value : Stamina -= _value;
+	UpdateStaminaValue();
 }
 
-float Attribute_Stamina::Get() const
+void Attribute_Stamina::ModifyStaminaCapacity(bool _positive, float _value)
+{
+	if(FMath::IsNearlyZero(_value)) return;
+
+	(_positive) ? Capacity += _value : Capacity -= _value;
+	UpdateStaminaCapacity();
+}
+
+float Attribute_Stamina::GetStaminaValue() const
 {
 	return Stamina;
 }
 
-float Attribute_Stamina::GetNormalized() const
+float Attribute_Stamina::GetStaminaCapacity() const
 {
-	return FMath::GetRangePct<float, float>( Limit.X, Limit.Y, Stamina);
+	return Capacity;
 }
 
-void Attribute_Stamina::Check_Internal()
+float Attribute_Stamina::GetNormalizedStaminaValue() const
 {
-	Stamina = FMath::Clamp(Stamina, Limit.X, Limit.Y);
+	return FMath::GetRangePct<float, float>( CapacityLimit.X, Capacity, Stamina);
+}
 
-	const float normalizedValue = GetNormalized();
+float Attribute_Stamina::GetNormalizedStaminaCapacity() const
+{
+	return FMath::GetRangePct<float, float>( CapacityLimit.X, CapacityLimit.Y, Capacity);
+}
+
+void Attribute_Stamina::UpdateStaminaValue()
+{
+	Stamina = FMath::Clamp(Stamina, 0.0f, Capacity);
+	const float normalizedValue = GetNormalizedStaminaValue();
 	This->OnStaminaChanged(Stamina, normalizedValue);
+}
+
+void Attribute_Stamina::UpdateStaminaCapacity()
+{
+	Capacity = FMath::Clamp(Capacity, CapacityLimit.X, CapacityLimit.Y);
+	const float normalizedValue = GetNormalizedStaminaCapacity();
+	This->OnStaminaCapacityChanged(Capacity, normalizedValue);
 }
 
 void UU5_CharacterBio_ACC::OnStaminaChanged_Implementation(float Value, float NormalizedValue)
 {
-	if(NormalizedValue <= 0.3f)
-	{
-		const float deltaTime = GetWorld()->DeltaTimeSeconds;
-		const float healthDamageValue = Health.Limit.Y * HealthDamageFromFreezingPercent * deltaTime; 
-		HealthModify(false, healthDamageValue);
-	}
 }
 
 void Attribute_Heat::Modify(bool _positive, float _value)

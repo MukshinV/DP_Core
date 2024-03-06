@@ -26,7 +26,7 @@ public: // Health
 	FVector2D Limit { 0, 100 };
 
 	UFUNCTION(BlueprintCallable, DisplayName="!HealthModify(C, Virtual)")
-	void Modify(bool Positive, float Value);
+	void Modify(bool _positive, float _value);
 
 	UFUNCTION(BlueprintCallable, DisplayName="!HealthGet(C, Virtual)")
 	float Get() const;
@@ -42,31 +42,51 @@ private:
 class Attribute_Stamina
 {
 public:
-	Attribute_Stamina() : This(nullptr) {}
-	Attribute_Stamina(UU5_CharacterBio_ACC* _this) { This = _this; }
+	Attribute_Stamina() : Attribute_Stamina(nullptr) {}
+	Attribute_Stamina(UU5_CharacterBio_ACC* _this)
+	{
+		This = _this;
+
+		Stamina = CapacityLimit.Y;
+		Capacity = CapacityLimit.Y;
+	}
 
 public:
 	UPROPERTY(VisibleAnywhere, DisplayName="@Stamina")
 	float Stamina = 100;
 
-	UPROPERTY(VisibleAnywhere, DisplayName = "@StaminaLimit")
-	FVector2D Limit { 0, 100 };
+	UPROPERTY(VisibleAnywhere, DisplayName="@Capacity")
+	float Capacity = 100; 
 
-	UFUNCTION(BlueprintCallable, DisplayName="!StaminaModify(C, Virtual)")
-	void Modify(bool Positive, float Value);
+	UPROPERTY(VisibleAnywhere, DisplayName = "@StaminaCapacityLimit")
+	FVector2D CapacityLimit { 30, 100 };
 
-	UFUNCTION(BlueprintCallable, DisplayName="!StaminaGet(C, Virtual)")
-	float Get() const;
+	UFUNCTION(BlueprintCallable, DisplayName="!ModifyStaminaValue(C, Virtual)")
+	void ModifyStaminaValue(bool _positive, float _value);
 
-	UFUNCTION(BlueprintCallable, DisplayName="!StaminaGetNormalized(C, Virtual)")
-	float GetNormalized() const;
+	UFUNCTION(BlueprintCallable, DisplayName="!ModifyStaminaCapacity(C, Virtual)")
+	void ModifyStaminaCapacity(bool _positive, float _value);
+	
+	UFUNCTION(BlueprintCallable, DisplayName="!GetStaminaValue(C, Virtual)")
+	float GetStaminaValue() const;
+
+	UFUNCTION(BlueprintCallable, DisplayName="!GetStaminaCapacity(C, Virtual)")
+	float GetStaminaCapacity() const;
+
+	UFUNCTION(BlueprintCallable, DisplayName="!GetNormalizedStaminaValue(C, Virtual)")
+	float GetNormalizedStaminaValue() const;
+
+	UFUNCTION(BlueprintCallable, DisplayName="!GetNormalizedStaminaCapacity(C, Virtual)")
+	float GetNormalizedStaminaCapacity() const;
 
 private:
 	UPROPERTY()
 	UU5_CharacterBio_ACC* This;
 	
 	UU5_CharacterBio_ACC* GetOwner() const { return This; }
-	void Check_Internal();
+
+	void UpdateStaminaValue();
+	void UpdateStaminaCapacity();
 };
 
 class Attribute_Heat
@@ -148,23 +168,32 @@ public: // Attribute Stamina
 
 	Attribute_Stamina Stamina;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@StaminaDamageFromFreezingPercent")
-	float StamingDamageFromFreezingPercent = 0.015f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@StaminaDamageFromFreezingNormalized")
+	float StaminaDamageFromFreezingNormalized = 0.015f;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@StaminaRestorePercent")
-	float StamingRestorePercent = 0.05f;
-	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@StaminaRestoreNormalized")
+	float StaminaRestorePerSecondNormalized = 0.05f;
+
 	UFUNCTION(BlueprintCallable, DisplayName="!StaminaModify(C, Virtual)")
 	virtual float StaminaModify(bool _positive, float _value);
 
-	UFUNCTION(BlueprintCallable, DisplayName = "!GetStamina(C, Virtual)")
-	virtual float GetStamina() const { return Stamina.Get(); }
+	UFUNCTION(BlueprintCallable, DisplayName="!StaminaCapacityModify(C, Virtual)")
+	virtual float StaminaCapacityModify(bool _positive, float _value);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetStaminaValue(C, Virtual)")
+	virtual float GetStamina() const { return Stamina.GetStaminaValue(); }
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetStaminaCapacity(C, Virtual)")
+	virtual float GetStaminaCapacity() const { return Stamina.GetStaminaCapacity(); }
 
 	UFUNCTION(BlueprintCallable, DisplayName = "!GetStaminaLimits(C)")
-	FVector2D GetStaminaLimits() const { return Stamina.Limit; }
+	FVector2D GetStaminaLimits() const { return Stamina.CapacityLimit; }
 
 	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnStaminaChanged(Virtual)")
 	void OnStaminaChanged(float Value, float NormalizedValue);
+
+	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnStaminaCapacityChanged(Virtual)")
+	void OnStaminaCapacityChanged(float _value, float _normalizedValue);
 
 public: // Attribute Heat
 

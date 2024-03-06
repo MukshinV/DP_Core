@@ -26,7 +26,15 @@ public:
 	ECharacterTemperatureStatus StatusType = ECharacterTemperatureStatus::Default;
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="@MaxStatusLimit")
 	float MaxStatusLimit = 0.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="@HeatDamagePerSecond")
-	float HeatDamagePerSecond = 0.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="@StaminaDamagePerSecond")
+	float StaminaDamagePerSecond = 0.0f;
 };
 
+USTRUCT(BlueprintType)
+struct FU5_BioTemperatureData_Struct : public FTableRowBase 
+{
+	GENERATED_BODY()
+public:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category="@TemperatureStatusArray")
+	TArray<FU5_TemperatureStatusData_Struct> TemperatureStatuses;
+};
