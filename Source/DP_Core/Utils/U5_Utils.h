@@ -6,6 +6,7 @@
 #include "U5_Utils.generated.h"
 
 inline FWideStringBuilderBase& operator<<(FWideStringBuilderBase& Builder, float Value) { return Builder.Appendf(WIDETEXT("%f"), Value); }
+inline FWideStringBuilderBase& operator<<(FWideStringBuilderBase& Builder, double Value) { return Builder.Appendf(WIDETEXT("%f"), static_cast<double>(Value)); }
 
 #define U5_DO_DEBUG_LOG 1
 #ifndef U5_DEBUG_ENABLE

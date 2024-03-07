@@ -65,4 +65,30 @@ public: // Gameplay reports.
 
 private: // Internal staff.
 	void InitBehaviorInGI_Internal();
+
+protected: // Transform calcultations
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName="@CameraYawConstrainCurveC")
+	TObjectPtr<UCurveFloat> CameraYawConstrainCurve;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@HorizontalCameraYawConstrainValueC")
+	float HorizontalCameraYawConstrainValue;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@PreviousControlRotationC")
+	FRotator PreviousControlRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@FrameControlRotationC")
+	FRotator FrameControlRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@FrameBodyRotationC")
+	FRotator FrameBodyRotation;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@RotationTimeC")
+	float RotationTime;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@PreviousYawCameraDeltaC")
+	float PreviousYawCameraDelta;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@FrameCameraDeltaC")
+	FVector2D FrameCameraDelta;
+
+	UFUNCTION(BlueprintCallable, DisplayName="!UpdateRotationsCamera(C)")
+	virtual void UpdateRotationsCamera();
+	UFUNCTION(BlueprintCallable, DisplayName="!ClampCameraYawByBodyRotation(C)")
+	virtual void ClampCameraYawByBodyRotation();
+	UFUNCTION(BlueprintCallable, DisplayName="!ApplyRotations(C)")
+	virtual void ApplyRotations();
 };
