@@ -60,13 +60,23 @@ void UU5_Behavior_ACC::InitBehaviorInGI_Internal()
 
 void UU5_Behavior_ACC::UpdateRotationsCamera()
 {
-	const float newCameraDelta = FMath::Abs(FMath::Abs(FrameControlRotation.Yaw) - FMath::Abs(FrameBodyRotation.Yaw));
+	const float distanceBetweenBodyAndCamera = FMath::Abs(FrameControlRotation.Yaw) - FMath::Abs(FrameBodyRotation.Yaw);
+	const bool bIsRotatingToRight = FMath::Sign<int32>(distanceBetweenBodyAndCamera) == 1;
+	const float newCameraDelta = FMath::Abs(distanceBetweenBodyAndCamera);
 	float cameraYawFactor = 1.0f;
 	
 	if(newCameraDelta > PreviousYawCameraDelta)
 	{
-		const float clampedDistanceFactor = FMath::GetMappedRangeValueClamped<float, float>({0.0f, HorizontalCameraYawConstrainValue}, {0.01f, 0.99f}, newCameraDelta);
-		cameraYawFactor = CameraYawConstrainCurve->GetFloatValue(clampedDistanceFactor);
+		if(bIsRotatingToRight)
+		{
+			const float clampedDistanceFactor = FMath::GetMappedRangeValueClamped<float, float>({0.0f, static_cast<float>(HorizontalCameraYawConstrainValue.Y)}, {0.01f, 0.99f}, newCameraDelta);
+			cameraYawFactor = CameraYawConstrainCurve->GetFloatValue(clampedDistanceFactor);
+		}
+		else
+		{
+			const float clampedDistanceFactor = FMath::GetMappedRangeValueClamped<float, float>({0.0f, static_cast<float>(HorizontalCameraYawConstrainValue.X)}, {0.01f, 0.99f}, newCameraDelta);
+			cameraYawFactor = CameraYawConstrainCurve->GetFloatValue(clampedDistanceFactor);			
+		}
 	}
 
 	PreviousControlRotation = FrameControlRotation;
@@ -84,8 +94,8 @@ void UU5_Behavior_ACC::UpdateRotationsCamera()
 
 void UU5_Behavior_ACC::ClampCameraYawByBodyRotation()
 {
-	const float rightConstrain = FrameBodyRotation.Yaw + HorizontalCameraYawConstrainValue;
-	const float leftConstrain = FrameBodyRotation.Yaw - HorizontalCameraYawConstrainValue;
+	const float rightConstrain = FrameBodyRotation.Yaw + HorizontalCameraYawConstrainValue.Y;
+	const float leftConstrain = FrameBodyRotation.Yaw - HorizontalCameraYawConstrainValue.X;
 	
 	FrameControlRotation.Yaw = FMath::Clamp(FrameControlRotation.Yaw, leftConstrain, rightConstrain); 
 }

@@ -71,7 +71,7 @@ protected: // Transform calcultations
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName="@CameraYawConstrainCurveC")
 	TObjectPtr<UCurveFloat> CameraYawConstrainCurve;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@HorizontalCameraYawConstrainValueC")
-	float HorizontalCameraYawConstrainValue;
+	FVector2D HorizontalCameraYawConstrainValue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@PreviousControlRotationC")
 	FRotator PreviousControlRotation;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@FrameControlRotationC")
