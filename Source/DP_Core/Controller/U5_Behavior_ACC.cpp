@@ -60,8 +60,8 @@ void UU5_Behavior_ACC::InitBehaviorInGI_Internal()
 
 void UU5_Behavior_ACC::UpdateRotationsCamera()
 {
+	const bool bIsRotatingToRight = FMath::Sign<int32>(FrameControlRotation.Yaw - FrameBodyRotation.Yaw) == 1;
 	const float distanceBetweenBodyAndCamera = FMath::Abs(FrameControlRotation.Yaw) - FMath::Abs(FrameBodyRotation.Yaw);
-	const bool bIsRotatingToRight = FMath::Sign<int32>(distanceBetweenBodyAndCamera) == 1;
 	const float newCameraDelta = FMath::Abs(distanceBetweenBodyAndCamera);
 	float cameraYawFactor = 1.0f;
 	
@@ -78,6 +78,8 @@ void UU5_Behavior_ACC::UpdateRotationsCamera()
 			cameraYawFactor = CameraYawConstrainCurve->GetFloatValue(clampedDistanceFactor);			
 		}
 	}
+
+	mU5_DEBUGOUT(false, "IsRotatingRight: " << bIsRotatingToRight << " DistanceBetween: " << distanceBetweenBodyAndCamera);
 
 	PreviousControlRotation = FrameControlRotation;
 
