@@ -4,6 +4,12 @@
 #include "GenericPlatform/GenericPlatformMath.h"
 #include "Kismet/KismetMathLibrary.h"
 
+
+void UU5_CharacterBio_ACC::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
+{
+	StaminaRestoreTick(DeltaTime);
+}
+
 float UU5_CharacterBio_ACC::HealthModify(bool _positive, float _value)
 {
 	Health.Modify(_positive, _value);
@@ -26,11 +32,14 @@ void UU5_CharacterBio_ACC::OnDeathBecame()
 	{
 		beh->Report_OnThisBehaviorspawnIsDead();
 	}
+
+	SetComponentTickEnabled(false);
 }
 
 float UU5_CharacterBio_ACC::StaminaModify(bool _positive, float _value)
 {
 	Stamina.ModifyStaminaValue(_positive, _value);
+	if (!_positive) SetStaminaRestoreState(EU5_Attribute_RestoreState::Cooldown);
 	return Stamina.Stamina;
 }
 
@@ -55,6 +64,56 @@ void UU5_CharacterBio_ACC::OnStaminaCapacityChanged_Implementation(float _value,
 	{
 		const float healthDamageValue = Health.Limit.Y * HealthDamageFromFreezingPercent * deltaSeconds; 
 		HealthModify(false, healthDamageValue);
+	}
+}
+
+void UU5_CharacterBio_ACC::EnableStaminaRestore(bool Enable)
+{
+	if (Enable)
+	{
+		if (StaminaRestoreState == EU5_Attribute_RestoreState::None)
+			SetStaminaRestoreState(EU5_Attribute_RestoreState::Cooldown);
+	}
+	else
+	{
+		SetStaminaRestoreState(EU5_Attribute_RestoreState::None);
+	}
+}
+
+void UU5_CharacterBio_ACC::SetStaminaRestoreState(EU5_Attribute_RestoreState _state)
+{
+	if (_state == StaminaRestoreState) return;
+
+	EU5_Attribute_RestoreState prev = StaminaRestoreState;
+	StaminaRestoreState = _state;
+
+	OnStaminaRestoreStateChanged(prev);
+}
+
+void UU5_CharacterBio_ACC::OnStaminaCooldownEnded()
+{
+	SetStaminaRestoreState(EU5_Attribute_RestoreState::Restore);
+}
+
+void UU5_CharacterBio_ACC::StaminaRestoreTick(float DeltaTime)
+{
+	if (StaminaRestoreState != EU5_Attribute_RestoreState::Restore)
+		return;
+
+	StaminaModify(true, StaminaRestorePerSecondNormalized * 100 * DeltaTime);
+	
+	if (GetStamina() >= GetStaminaCapacity()) SetStaminaRestoreState(EU5_Attribute_RestoreState::None);
+}
+
+void UU5_CharacterBio_ACC::OnStaminaRestoreStateChanged(EU5_Attribute_RestoreState PrevState)
+{
+	switch (StaminaRestoreState)
+	{
+		case EU5_Attribute_RestoreState::None:
+			GetWorld()->GetTimerManager().ClearTimer(StaminaRestoreCooldownTimerHandle);
+			break;
+		case EU5_Attribute_RestoreState::Cooldown:
+			GetWorld()->GetTimerManager().SetTimer(StaminaRestoreCooldownTimerHandle, this, &UU5_CharacterBio_ACC::OnStaminaCooldownEnded, StaminaRestoreCooldown);
 	}
 }
 

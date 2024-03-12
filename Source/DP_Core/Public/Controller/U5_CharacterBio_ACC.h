@@ -6,6 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "GenericTeamAgentInterface.h"
 
+#include "Data/U5_CharacterBio_Data.h"
+
 #include "U5_CharacterBio_ACC.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FDeathDelegate);
@@ -127,8 +129,12 @@ public:
 		Stamina(this),
 		Heat(this)
 	{
-		PrimaryComponentTick.bCanEverTick = false;
+		PrimaryComponentTick.bCanEverTick = true;
+		SetComponentTickEnabled(true);
+		PrimaryComponentTick.TickInterval = 0.1f;
 	}
+
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 
 public: // Death
@@ -174,6 +180,9 @@ public: // Attribute Stamina
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@StaminaRestoreNormalized")
 	float StaminaRestorePerSecondNormalized = 0.05f;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "@StaminaRestoreCooldown")
+	float StaminaRestoreCooldown = 2.f;
+
 	UFUNCTION(BlueprintCallable, DisplayName="!StaminaModify(C, Virtual)")
 	virtual float StaminaModify(bool _positive, float _value);
 
@@ -194,6 +203,27 @@ public: // Attribute Stamina
 
 	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnStaminaCapacityChanged(Virtual)")
 	void OnStaminaCapacityChanged(float _value, float _normalizedValue);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!EnableStaminaRestore(C)")
+	void EnableStaminaRestore(bool Enable = true);
+
+protected:
+	UFUNCTION(BlueprintCallable, DisplayName = "!SetStaminaRestoreState(C)")
+	virtual void SetStaminaRestoreState(EU5_Attribute_RestoreState _state);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!StaminaRestoreTick(C)")
+	virtual void StaminaRestoreTick(float DeltaTime);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!OnStaminaRestoreStateChanged(C)")
+	virtual void OnStaminaRestoreStateChanged(EU5_Attribute_RestoreState PrevState);
+
+	UFUNCTION()
+	virtual void OnStaminaCooldownEnded();
+
+	EU5_Attribute_RestoreState StaminaRestoreState{ EU5_Attribute_RestoreState::None };
+
+	FTimerHandle StaminaRestoreCooldownTimerHandle;
+
 
 public: // Attribute Heat
 
