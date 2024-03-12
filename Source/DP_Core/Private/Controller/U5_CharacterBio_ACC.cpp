@@ -32,8 +32,6 @@ void UU5_CharacterBio_ACC::OnDeathBecame()
 	{
 		beh->Report_OnThisBehaviorspawnIsDead();
 	}
-
-	SetComponentTickEnabled(false);
 }
 
 float UU5_CharacterBio_ACC::StaminaModify(bool _positive, float _value)
@@ -97,8 +95,8 @@ void UU5_CharacterBio_ACC::OnStaminaCooldownEnded()
 
 void UU5_CharacterBio_ACC::StaminaRestoreTick(float DeltaTime)
 {
-	if (StaminaRestoreState != EU5_Attribute_RestoreState::Restore)
-		return;
+	if (IsDead()) return;
+	if (StaminaRestoreState != EU5_Attribute_RestoreState::Restore) return;
 
 	StaminaModify(true, StaminaRestorePerSecondNormalized * 100 * DeltaTime);
 	
