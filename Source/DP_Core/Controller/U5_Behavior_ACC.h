@@ -73,6 +73,9 @@ public: // Transform calcultations
 	UFUNCTION(BlueprintPure, DisplayName = "!IsAutoBodyRotationEnabled(C)", Category = "Rotation")
 	FORCEINLINE bool IsAutoBodyRotationEnabled() const { return EnableAutoBodyRotation; };
 
+	UFUNCTION(BlueprintPure, DisplayName = "!IsAutoBodyRotationEnabled(C)", Category = "Rotation")
+	FRotator GetFrameBodyRotation() const;
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName="@CameraYawConstrainCurveC")

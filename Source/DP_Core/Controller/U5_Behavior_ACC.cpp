@@ -58,10 +58,18 @@ void UU5_Behavior_ACC::InitBehaviorInGI_Internal()
 
 }
 
+FRotator UU5_Behavior_ACC::GetFrameBodyRotation() const
+{
+	if (!EnableAutoBodyRotation && GetOwner())
+		return GetOwner()->GetActorRotation();
+
+	return FrameBodyRotation;
+}
+
 void UU5_Behavior_ACC::UpdateRotationsCamera()
 {
-	const bool bIsRotatingToRight = FMath::Sign<int32>(FrameControlRotation.Yaw - FrameBodyRotation.Yaw) == 1;
-	const float distanceBetweenBodyAndCamera = FMath::Abs(FrameControlRotation.Yaw) - FMath::Abs(FrameBodyRotation.Yaw);
+	const bool bIsRotatingToRight = FMath::Sign<int32>(FrameControlRotation.Yaw - GetFrameBodyRotation().Yaw) == 1;
+	const float distanceBetweenBodyAndCamera = FMath::Abs(FrameControlRotation.Yaw) - FMath::Abs(GetFrameBodyRotation().Yaw);
 	const float newCameraDelta = FMath::Abs(distanceBetweenBodyAndCamera);
 	float cameraYawFactor = 1.0f;
 	
@@ -96,8 +104,8 @@ void UU5_Behavior_ACC::UpdateRotationsCamera()
 
 void UU5_Behavior_ACC::ClampCameraYawByBodyRotation()
 {
-	const float rightConstrain = FrameBodyRotation.Yaw + HorizontalCameraYawConstrainValue.Y;
-	const float leftConstrain = FrameBodyRotation.Yaw - HorizontalCameraYawConstrainValue.X;
+	const float rightConstrain = GetFrameBodyRotation().Yaw + HorizontalCameraYawConstrainValue.Y;
+	const float leftConstrain = GetFrameBodyRotation().Yaw - HorizontalCameraYawConstrainValue.X;
 	
 	FrameControlRotation.Yaw = FMath::Clamp(FrameControlRotation.Yaw, leftConstrain, rightConstrain); 
 }
