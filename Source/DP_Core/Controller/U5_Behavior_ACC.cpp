@@ -109,8 +109,11 @@ void UU5_Behavior_ACC::ApplyRotations()
 	if(!PawnOwner) return;
 	if(!PawnOwner->Controller) return;
 
+	InterpFrameBodyRotation = FMath::RInterpTo(InterpFrameBodyRotation, FrameBodyRotation,
+		GetWorld()->DeltaTimeSeconds, FrameBodyRotationInterpSpeed);
+
 	PawnOwner->Controller->SetControlRotation(FrameControlRotation);
-	PawnOwner->SetActorRotation(FrameBodyRotation);
+	if (EnableAutoBodyRotation) PawnOwner->SetActorRotation(InterpFrameBodyRotation);
 	FrameCameraDelta = {0.0f, 0.0f};
 }
 

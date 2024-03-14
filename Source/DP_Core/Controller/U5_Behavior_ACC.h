@@ -66,7 +66,14 @@ public: // Gameplay reports.
 private: // Internal staff.
 	void InitBehaviorInGI_Internal();
 
-protected: // Transform calcultations
+public: // Transform calcultations
+	UFUNCTION(BlueprintCallable, DisplayName = "!SetAutoBodyRotationEnabled(C)", Category = "Rotation")
+	void SetAutoBodyRotationEnabled(bool Enable) { EnableAutoBodyRotation = Enable; }
+
+	UFUNCTION(BlueprintPure, DisplayName = "!IsAutoBodyRotationEnabled(C)", Category = "Rotation")
+	FORCEINLINE bool IsAutoBodyRotationEnabled() const { return EnableAutoBodyRotation; };
+
+protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName="@CameraYawConstrainCurveC")
 	TObjectPtr<UCurveFloat> CameraYawConstrainCurve;
@@ -84,6 +91,14 @@ protected: // Transform calcultations
 	float PreviousYawCameraDelta;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@FrameCameraDeltaC")
 	FVector2D FrameCameraDelta;
+
+	FRotator InterpFrameBodyRotation;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "@FrameBodyRotationInterpSpeed")
+	float FrameBodyRotationInterpSpeed{ 5.f };
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName = "@FrameCameraDeltaC")
+	bool EnableAutoBodyRotation{ true };
 
 	UFUNCTION(BlueprintCallable, DisplayName="!UpdateRotationsCamera(C)")
 	virtual void UpdateRotationsCamera();
