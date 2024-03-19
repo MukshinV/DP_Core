@@ -30,6 +30,9 @@ public: // Health
 	UFUNCTION(BlueprintCallable, DisplayName="!HealthModify(C, Virtual)")
 	void Modify(bool _positive, float _value);
 
+	UFUNCTION(BlueprintCallable, DisplayName = "!HealthReset(C, Virtual)")
+	float Reset();
+
 	UFUNCTION(BlueprintCallable, DisplayName="!HealthGet(C, Virtual)")
 	float Get() const;
 
@@ -161,7 +164,7 @@ public: // Attribute Health
 	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnHealthChanged(Virtual)")
 	void OnHealthChanged(float Value, float NormalizedValue);
 
-	void OnDeathBecame();
+	virtual void OnDeathBecame();
 
 	UPROPERTY(BlueprintAssignable, VisibleAnywhere)
 	FDeathDelegate cbDeath;

@@ -153,6 +153,12 @@ void Attribute_Health::Modify(bool _positive, float _value)
 	Check_Internal();
 }
 
+float Attribute_Health::Reset()
+{
+	Health = Limit.Y;
+	return Health;
+}
+
 float Attribute_Health::Get() const
 {
 	return Health;
