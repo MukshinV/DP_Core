@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
-#include "Components/ActorComponent.h"
+#include "SaveSystem/U5_CheckpointSystem_CU.h"
 #include "U5_GameInstace.generated.h"
 
 UCLASS(Blueprintable)
@@ -12,6 +12,9 @@ class DP_CORE_API UU5_GameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
+public:
+	virtual void Init() override;
+	
 public:
 	UPROPERTY(BlueprintReadOnly, DisplayName="@LocalController")
 	class APlayerController* LocalController = nullptr;
@@ -43,4 +46,11 @@ public: // Level Actor.
 
 	UFUNCTION(BlueprintCallable, DisplayName="!GetLevelActor()")
 	AU5_Level_CA* GetLevelActor() const;
+
+public: //Checkpoint system
+	UFUNCTION(BlueprintCallable, DisplayName="!GetCheckpointSystem(C)")
+	UU5_CheckpointSystem_CU* GetCheckpointSystem() const { return CheckpointSystem; }
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName="@CheckpointSystemC")
+	TObjectPtr<UU5_CheckpointSystem_CU> CheckpointSystem;
 };

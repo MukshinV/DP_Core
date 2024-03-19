@@ -3,6 +3,15 @@
 #include "../Utils/U5_Utils.h"
 #include "U5_Level_CA.h"
 
+
+void UU5_GameInstance::Init()
+{
+    Super::Init();
+
+    CheckpointSystem = NewObject<UU5_CheckpointSystem_CU>();
+    CheckpointSystem->Initialize(this);
+}
+
 void UU5_GameInstance::SetLocalController(const APlayerController* _controller)
 {
     mU5_FUNCTION(true);

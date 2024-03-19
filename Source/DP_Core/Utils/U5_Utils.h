@@ -23,32 +23,7 @@ inline FWideStringBuilderBase& operator<<(FWideStringBuilderBase& Builder, doubl
 #define mQBRACED(text)	' "'	## text ##		'" '
 #define mDNAME(object) UKismetSystemLibrary::GetDisplayName(object)
 
-namespace U5_Log
-{
-	using U5_LogStream = TStringBuilder<1024>;
-	
-	U5_LogStream& GetLogStream();
-}
-
-// TODO: FString strean or use standart tchar stream. printf style is kiiling me.
-#define mU5_FUNCTION(enable) { if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) U5::DebugMessage ( FString( __func__ ) ); }
-#define mU5_FUNCMESS(enable, text) \
-{ \
-	if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) \
-	{ \
-		U5::DebugMessage(*(U5_Log::GetLogStream() << FString( __func__ ) << ": " << text)); \
-		U5_Log::GetLogStream().Reset(); \
-	} \
-}
-
-#define mU5_DEBUGOUT(enable, text) \
-{ \
-	if(enable) \
-	{ \
-		U5::DebugMessage(*(U5_Log::GetLogStream() << text)); \
-		U5_Log::GetLogStream().Reset(); \
-	} \
-}
+using U5_LogStream = TStringBuilder<1024>;
 
 UCLASS()
 class DP_CORE_API U5_EasyLogInterface : public UBlueprintFunctionLibrary
@@ -57,6 +32,8 @@ class DP_CORE_API U5_EasyLogInterface : public UBlueprintFunctionLibrary
 public:
 	static void SelfCheckModule();
 
+	static U5_LogStream& GetLogStream();
+	
 	UFUNCTION()
 	static void Log(const FString& _value);
 
@@ -82,4 +59,24 @@ class DP_CORE_API U5 : public U5_EasyLogInterface
 {
 	GENERATED_BODY()
 };
+
+// TODO: FString strean or use standart tchar stream. printf style is kiiling me.
+#define mU5_FUNCTION(enable) { if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) U5::DebugMessage ( FString( __func__ ) ); }
+#define mU5_FUNCMESS(enable, text) \
+	{ \
+	if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) \
+	{ \
+		U5::DebugMessage(*(U5_EasyLogInterface::GetLogStream() << FString( __func__ ) << ": " << text)); \
+		U5_EasyLogInterface::GetLogStream().Reset(); \
+	} \
+}
+
+#define mU5_DEBUGOUT(enable, text) \
+{ \
+	if(enable) \
+	{ \
+		U5::DebugMessage(*(U5_EasyLogInterface::GetLogStream() << text)); \
+		U5_EasyLogInterface::GetLogStream().Reset(); \
+	} \
+}
 
