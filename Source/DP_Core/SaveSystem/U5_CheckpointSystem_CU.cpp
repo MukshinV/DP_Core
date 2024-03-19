@@ -32,8 +32,14 @@ void UU5_CheckpointSystem_CU::SaveGameState()
 	
 	if(!TrySavePlayerState(newCheckpoint)) return;
 	
-	LastCheckpoint = MoveTemp(newCheckpoint);
+	LastCheckpointData = MoveTemp(newCheckpoint);
 	mU5_DEBUGOUT(true, L"Checkpoint saved");
+}
+
+void UU5_CheckpointSystem_CU::LoadDebugCheckpoint(AU5_DebugCheckpoint_CA* _checkpointActor)
+{
+	LastCheckpointData.PlayerTransform = _checkpointActor->GetActorTransform();
+	LoadLastMapCheckpointState();
 }
 
 void UU5_CheckpointSystem_CU::LoadLastMapCheckpointState()
@@ -44,7 +50,7 @@ void UU5_CheckpointSystem_CU::LoadLastMapCheckpointState()
 
 	if(controlledPawn)
 	{
-		controlledPawn->SetActorTransform(LastCheckpoint.PlayerTransform);
+		controlledPawn->SetActorTransform(LastCheckpointData.PlayerTransform);
 	}
 }
 

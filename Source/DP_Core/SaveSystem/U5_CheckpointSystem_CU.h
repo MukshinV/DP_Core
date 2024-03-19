@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
+#include "U5_DebugCheckpoint_CA.h"
 #include "U5_CheckpointSystem_CU.generated.h"
 
 USTRUCT()
@@ -14,8 +15,6 @@ struct FU5_CheckpointState_Struct
 public:
 	UPROPERTY()
 	FTransform PlayerTransform;
-	UPROPERTY()
-	FRotator PlayerRotation;
 	UPROPERTY()
 	FString LevelName;
 
@@ -38,12 +37,14 @@ public:
 	void SaveGameState();
 	UFUNCTION(BlueprintCallable, DisplayName="!LoadLastMapCheckpointState(C)")
 	void LoadLastMapCheckpointState();
-
+	UFUNCTION(BlueprintCallable, DisplayName="!LoadDebugCheckpoint(C)(DebugCheckpoint_CA)")
+	void LoadDebugCheckpoint(AU5_DebugCheckpoint_CA* _checkpointActor);
+	
 private:
 	bool TrySavePlayerState(FU5_CheckpointState_Struct& _targetCheckpointState) const;
 	
 	UPROPERTY()
 	TObjectPtr<UU5_GameInstance> GameInstance;
 	UPROPERTY()
-	FU5_CheckpointState_Struct LastCheckpoint;
+	FU5_CheckpointState_Struct LastCheckpointData;
 };
