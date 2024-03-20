@@ -21,19 +21,11 @@ public:
 	Attribute_Health(UU5_CharacterBio_ACC* _this) { This = _this; }
 
 public: // Health
-	UPROPERTY(VisibleAnywhere, DisplayName="@Health")
 	float Health = 100;
-
-	UPROPERTY(VisibleAnywhere, DisplayName = "@HealthLimit")
 	FVector2D Limit { 0, 100 };
 
-	UFUNCTION(BlueprintCallable, DisplayName="!HealthModify(C, Virtual)")
 	void Modify(bool _positive, float _value);
-
-	UFUNCTION(BlueprintCallable, DisplayName = "!HealthReset(C, Virtual)")
 	float Reset();
-
-	UFUNCTION(BlueprintCallable, DisplayName="!HealthGet(C, Virtual)")
 	float Get() const;
 
 private:
@@ -57,31 +49,15 @@ public:
 	}
 
 public:
-	UPROPERTY(VisibleAnywhere, DisplayName="@Stamina")
 	float Stamina = 100;
-
-	UPROPERTY(VisibleAnywhere, DisplayName="@Capacity")
 	float Capacity = 100; 
-
-	UPROPERTY(VisibleAnywhere, DisplayName = "@StaminaCapacityLimit")
 	FVector2D CapacityLimit { 30, 100 };
 
-	UFUNCTION(BlueprintCallable, DisplayName="!ModifyStaminaValue(C, Virtual)")
 	void ModifyStaminaValue(bool _positive, float _value);
-
-	UFUNCTION(BlueprintCallable, DisplayName="!ModifyStaminaCapacity(C, Virtual)")
 	void ModifyStaminaCapacity(bool _positive, float _value);
-	
-	UFUNCTION(BlueprintCallable, DisplayName="!GetStaminaValue(C, Virtual)")
 	float GetStaminaValue() const;
-
-	UFUNCTION(BlueprintCallable, DisplayName="!GetStaminaCapacity(C, Virtual)")
 	float GetStaminaCapacity() const;
-
-	UFUNCTION(BlueprintCallable, DisplayName="!GetNormalizedStaminaValue(C, Virtual)")
 	float GetNormalizedStaminaValue() const;
-
-	UFUNCTION(BlueprintCallable, DisplayName="!GetNormalizedStaminaCapacity(C, Virtual)")
 	float GetNormalizedStaminaCapacity() const;
 
 private:
@@ -94,23 +70,17 @@ private:
 	void UpdateStaminaCapacity();
 };
 
-class Attribute_Heat
+class Attribute_Battery
 {
 public:
-	Attribute_Heat() : This(nullptr) {}
-	Attribute_Heat(UU5_CharacterBio_ACC* _this) { This = _this; }
+	Attribute_Battery() : This(nullptr) {}
+	Attribute_Battery(UU5_CharacterBio_ACC* _this) { This = _this; }
 
-public: // Heat
-	UPROPERTY(VisibleAnywhere, DisplayName="@Heat")
-	float Heat = 100;
-
-	UPROPERTY(VisibleAnywhere, DisplayName = "@HeatLimit")
+public:
+	float Battery = 100;
 	FVector2D Limit { 0, 100 };
-
-	UFUNCTION(BlueprintCallable, DisplayName="!HeatModify(C, Virtual)")
+	
 	void Modify(bool _positive, float _value);
-
-	UFUNCTION(BlueprintCallable, DisplayName="!HeatGet(C, Virtual)")
 	float Get() const;
 
 private:
@@ -130,7 +100,7 @@ public:
 	UU5_CharacterBio_ACC() :
 		Health(this),
 		Stamina(this),
-		Heat(this)
+		Battery(this)
 	{
 		PrimaryComponentTick.bCanEverTick = true;
 		SetComponentTickEnabled(true);
@@ -228,21 +198,21 @@ protected:
 	FTimerHandle StaminaRestoreCooldownTimerHandle;
 
 
-public: // Attribute Heat
+public: // Attribute Battery
 
-	Attribute_Heat Heat;
+	Attribute_Battery Battery;
 
-	UFUNCTION(BlueprintCallable, DisplayName="!HeatModify(C, Virtual)")
-	virtual float HeatModify(bool _positive, float _value);
+	UFUNCTION(BlueprintCallable, DisplayName="!BatteryModify(C, Virtual)")
+	virtual float BatteryModify(bool _positive, float _value);
 
-	UFUNCTION(BlueprintCallable, DisplayName = "!GetHeat(C, Virtual)")
-	virtual float GetHeat() const { return Heat.Get(); }
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetBattery(C, Virtual)")
+	virtual float GetBattery() const { return Battery.Get(); }
 
-	UFUNCTION(BlueprintCallable, DisplayName = "!GetHeatLimits(C)")
-	FVector2D GetHeatLimits() const { return Heat.Limit; }
+	UFUNCTION(BlueprintCallable, DisplayName = "!GetBatteryLimits(C)")
+	FVector2D GetBatteryLimits() const { return Battery.Limit; }
 
-	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnHeatChanged(Virtual)")
-	void OnHeatChanged(float _value, float _normalizedValue, float _incomingValue);
+	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnBatteryChanged(Virtual)")
+	void OnBatteryChanged(float _value, float _normalizedValue, float _incomingValue);
 
 public: // Attribute Sanity
 

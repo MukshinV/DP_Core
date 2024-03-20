@@ -115,13 +115,13 @@ void UU5_CharacterBio_ACC::OnStaminaRestoreStateChanged(EU5_Attribute_RestoreSta
 	}
 }
 
-float UU5_CharacterBio_ACC::HeatModify(bool _positive, float _value)
+float UU5_CharacterBio_ACC::BatteryModify(bool _positive, float _value)
 {
-	Heat.Modify(_positive, _value);
-	return Heat.Heat;
+	Battery.Modify(_positive, _value);
+	return Battery.Battery;
 }
 
-void UU5_CharacterBio_ACC::OnHeatChanged_Implementation(float _value, float _normalizedValue, float _incomingValue)
+void UU5_CharacterBio_ACC::OnBatteryChanged_Implementation(float _value, float _normalizedValue, float _incomingValue)
 {
 }
 
@@ -233,23 +233,23 @@ void UU5_CharacterBio_ACC::OnStaminaChanged_Implementation(float Value, float No
 {
 }
 
-void Attribute_Heat::Modify(bool _positive, float _value)
+void Attribute_Battery::Modify(bool _positive, float _value)
 {
 	const float multiplySign = _positive ? 1.0f : -1.0f;
 	const float incomingValue = _value * multiplySign; 
-	Heat += incomingValue;
+	Battery += incomingValue;
 	Check_Internal(incomingValue);
 }
 
-float Attribute_Heat::Get() const
+float Attribute_Battery::Get() const
 {
-	return Heat;
+	return Battery;
 }
 
-void Attribute_Heat::Check_Internal(float _incomingValue)
+void Attribute_Battery::Check_Internal(float _incomingValue)
 {
-	Heat = FMath::Clamp(Heat, Limit.X, Limit.Y);
+	Battery = FMath::Clamp(Battery, Limit.X, Limit.Y);
 
-	const float normalizedValue = FMath::GetRangePct<float, float>( Limit.X, Limit.Y, Heat); 
-	This->OnHeatChanged(Heat, normalizedValue, _incomingValue);
+	const float normalizedValue = FMath::GetRangePct<float, float>( Limit.X, Limit.Y, Battery); 
+	This->OnBatteryChanged(Battery, normalizedValue, _incomingValue);
 }
