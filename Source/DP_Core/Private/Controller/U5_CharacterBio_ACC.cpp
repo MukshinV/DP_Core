@@ -54,7 +54,7 @@ float UU5_CharacterBio_ACC::StaminaCapacityModify(bool _positive, float _value)
 	return Stamina.Capacity;
 }
 
-void UU5_CharacterBio_ACC::OnStaminaCapacityChanged_Implementation(float _value, float _normalizedValue)
+void UU5_CharacterBio_ACC::OnStaminaCapacityChanged_Implementation(float _value, float _normalizedValue, float _incomingValue)
 {
 	const float deltaSeconds = GetWorld()->DeltaTimeSeconds;
 
@@ -190,9 +190,10 @@ void Attribute_Stamina::ModifyStaminaValue(bool _positive, float _value)
 void Attribute_Stamina::ModifyStaminaCapacity(bool _positive, float _value)
 {
 	if(FMath::IsNearlyZero(_value)) return;
-
-	(_positive) ? Capacity += _value : Capacity -= _value;
-	UpdateStaminaCapacity();
+	const float multiplySign = _positive ? 1.0f : -1.0f;
+	const float incomingValue = _value * multiplySign; 
+	Capacity += incomingValue;
+	UpdateStaminaCapacity(incomingValue);
 }
 
 float Attribute_Stamina::GetStaminaValue() const
@@ -222,11 +223,11 @@ void Attribute_Stamina::UpdateStaminaValue()
 	This->OnStaminaChanged(Stamina, normalizedValue);
 }
 
-void Attribute_Stamina::UpdateStaminaCapacity()
+void Attribute_Stamina::UpdateStaminaCapacity(float _incomingValue)
 {
 	Capacity = FMath::Clamp(Capacity, CapacityLimit.X, CapacityLimit.Y);
 	const float normalizedValue = GetNormalizedStaminaCapacity();
-	This->OnStaminaCapacityChanged(Capacity, normalizedValue);
+	This->OnStaminaCapacityChanged(Capacity, normalizedValue, _incomingValue);
 }
 
 void UU5_CharacterBio_ACC::OnStaminaChanged_Implementation(float Value, float NormalizedValue)

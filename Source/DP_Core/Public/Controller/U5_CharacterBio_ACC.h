@@ -67,7 +67,7 @@ private:
 	UU5_CharacterBio_ACC* GetOwner() const { return This; }
 
 	void UpdateStaminaValue();
-	void UpdateStaminaCapacity();
+	void UpdateStaminaCapacity(float _incomingValue);
 };
 
 class Attribute_Battery
@@ -175,7 +175,7 @@ public: // Attribute Stamina
 	void OnStaminaChanged(float Value, float NormalizedValue);
 
 	UFUNCTION(BlueprintNativeEvent, DisplayName="!OnStaminaCapacityChanged(Virtual)")
-	void OnStaminaCapacityChanged(float _value, float _normalizedValue);
+	void OnStaminaCapacityChanged(float _value, float _normalizedValue, float _incomingValue);
 
 	UFUNCTION(BlueprintCallable, DisplayName = "!EnableStaminaRestore(C)")
 	void EnableStaminaRestore(bool Enable = true);
