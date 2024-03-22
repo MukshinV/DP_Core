@@ -2,6 +2,8 @@
 #include "../Controller/U5_Controller_ACC.h"
 #include "../Utils/U5_Utils.h"
 #include "U5_Level_CA.h"
+#include "GameFramework/PlayerStart.h"
+#include "Kismet/GameplayStatics.h"
 
 
 void UU5_GameInstance::Init()
@@ -10,6 +12,25 @@ void UU5_GameInstance::Init()
 
     CheckpointSystem = NewObject<UU5_CheckpointSystem_CU>();
     CheckpointSystem->Initialize(this);
+}
+
+void UU5_GameInstance::OnBeforeLevelActorBeginPlay()
+{
+    CheckpointSystem->OnBeforeLevelActorPlay();
+
+    check(LevelActor);
+    
+    GetWorld()->GetTimerManager().SetTimerForNextTick(this, &UU5_GameInstance::StartGame);
+}
+
+void UU5_GameInstance::OnBeforeLevelActorEndPlay()
+{
+    CheckpointSystem->OnBeforeLevelActorEndPlay();
+}
+
+void UU5_GameInstance::StartGame()
+{
+    LevelActor->StartGame();
 }
 
 void UU5_GameInstance::SetLocalController(const APlayerController* _controller)

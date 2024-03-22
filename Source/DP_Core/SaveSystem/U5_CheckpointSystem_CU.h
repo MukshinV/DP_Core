@@ -4,7 +4,8 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Object.h"
-#include "U5_DebugCheckpoint_CA.h"
+#include "U5_PlaceableCheckpoint_CA.h"
+#include "U5_PlayerStart_CA.h"
 #include "U5_CheckpointSystem_CU.generated.h"
 
 USTRUCT()
@@ -31,20 +32,30 @@ class DP_CORE_API UU5_CheckpointSystem_CU : public UObject
 
 public:
 	UU5_CheckpointSystem_CU();
-	void Initialize(UU5_GameInstance* _gameInstance);
 	
+	void Initialize(UU5_GameInstance* _gameInstance);
+	void OnBeforeLevelActorPlay();
+	void OnBeforeLevelActorEndPlay();
+
+	UFUNCTION(BlueprintCallable, DisplayName="!GetPlayerStart(C)")
+	AU5_PlayerStart_CA* GetPlayerStart() const;
 	UFUNCTION(BlueprintCallable, DisplayName="!SaveGameState(C)")
 	void SaveGameState();
 	UFUNCTION(BlueprintCallable, DisplayName="!LoadLastMapCheckpointState(C)")
 	void LoadLastMapCheckpointState();
 	UFUNCTION(BlueprintCallable, DisplayName="!LoadDebugCheckpoint(C)(DebugCheckpoint_CA)")
-	void LoadDebugCheckpoint(AU5_DebugCheckpoint_CA* _checkpointActor);
-	
+	void LoadCheckpoint(AU5_PlaceableCheckpoint_CA* _checkpointActor);
+	UFUNCTION(BlueprintCallable, DisplayName="!RegisterPlayerStart(C)(AU5_PlayerStart_CA)")
+	void RegisterPlayerStart(AU5_PlayerStart_CA* _playerStart);
+	UFUNCTION(BlueprintCallable, DisplayName="!UnregisterPlayerStart(C)(AU5_PlayerStart_CA)")
+	void UnregisterPlayerStart(AU5_PlayerStart_CA* _playerStart);
+
 private:
 	bool TrySavePlayerState(FU5_CheckpointState_Struct& _targetCheckpointState) const;
 	
-	UPROPERTY()
 	TObjectPtr<UU5_GameInstance> GameInstance;
-	UPROPERTY()
+	TObjectPtr<AU5_PlayerStart_CA> LevelPlayerStart;
+	
 	FU5_CheckpointState_Struct LastCheckpointData;
 };
+

@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "U5_Level_CA.h"
 #include "Engine/GameInstance.h"
 #include "SaveSystem/U5_CheckpointSystem_CU.h"
 #include "U5_GameInstace.generated.h"
@@ -14,7 +15,9 @@ class DP_CORE_API UU5_GameInstance : public UGameInstance
 
 public:
 	virtual void Init() override;
-	
+	virtual void OnBeforeLevelActorBeginPlay();
+	virtual void OnBeforeLevelActorEndPlay();
+	virtual void StartGame();
 public:
 	UPROPERTY(BlueprintReadOnly, DisplayName="@LocalController")
 	class APlayerController* LocalController = nullptr;
