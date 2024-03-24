@@ -41,13 +41,6 @@ protected:
 	virtual void BeginPlay() override;
 	virtual void OnComponentCreated() override;
 
-
-public: // Utility.
-
-	//! Only a true way to convert handle to string for all project.
-	UFUNCTION()
-	static void EventHandleToString(FString& _result, const FDataTableRowHandle& _handle);
-
 public: // Event system.
 	// Event system contains: 
 	// FEventSystemData + FEventHandlers

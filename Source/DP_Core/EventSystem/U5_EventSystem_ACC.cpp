@@ -1,6 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 #include "U5_EventSystem_ACC.h"
 #include "U5_Event_ACC.h"
+#include "U5_Event_BlueprintLibrary.h"
 
 #include "../Utils/U5_Utils.h"
 
@@ -37,11 +38,6 @@ void UU5_EventSystem_ACC::CheckParent_Internal()
 	check(Cast<AGameModeBase>(GetOwner()));
 }
 
-void UU5_EventSystem_ACC::EventHandleToString(FString& _result, const FDataTableRowHandle& _handle)
-{
-	_result = (_handle.DataTable.GetName() + " : " + _handle.RowName.ToString());
-}
-
 void UU5_EventSystem_ACC::RegisterEvent(const UU5_Event_ACC* _event)
 {
 	check(_event);
@@ -56,7 +52,7 @@ void UU5_EventSystem_ACC::UnRegisterEvent(const UU5_Event_ACC* _event)
 	UU5_Event_ACC* event = const_cast<UU5_Event_ACC*>(_event);
 	for (FDataTableRowHandle& _handle : event->ResponceList)
 	{
-		FString eventTag; EventHandleToString(eventTag, _handle);
+		FString eventTag; UU5_Event_BlueprintLibrary::EventHandleToString(eventTag, _handle);
 		FEventHandlers* _handlers =  EventSystemData.GetEvents().Find(eventTag);
 		if (_handlers)
 		{
@@ -86,7 +82,7 @@ void UU5_EventSystem_ACC::SetEventValueS(const FString& _eventTag, float _value)
 
 void UU5_EventSystem_ACC::SetEventValueH(const FDataTableRowHandle& _handle, float _value)
 {
-	FString eventTag; EventHandleToString(eventTag, _handle);
+	FString eventTag; UU5_Event_BlueprintLibrary::EventHandleToString(eventTag, _handle);
 	SetEventValueS(eventTag, _value);
 }
 
@@ -102,7 +98,7 @@ float UU5_EventSystem_ACC::GetEventValueS(const FString& _name)
 
 float UU5_EventSystem_ACC::GetEventValueH(const FDataTableRowHandle& _handle)
 {
-	FString eventTag; EventHandleToString(eventTag, _handle);
+	FString eventTag; UU5_Event_BlueprintLibrary::EventHandleToString(eventTag, _handle);
 	return GetEventValueS(eventTag);
 }
 
@@ -113,7 +109,7 @@ void UU5_EventSystem_ACC::FEventSystemData::AddEvent(const UU5_Event_ACC* _event
 	const UU5_Event_ACC::event_data_t eventData = _event->GetEventData();
 	for(const FDataTableRowHandle& element : eventData)
 	{
-		FString eventTag; EventHandleToString(eventTag, element);
+		FString eventTag; UU5_Event_BlueprintLibrary::EventHandleToString(eventTag, element);
 		FEventHandlers* handleStruct = Events.Find(eventTag);
 		if(!handleStruct)
 		{
