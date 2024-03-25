@@ -71,6 +71,15 @@ class DP_CORE_API U5 : public U5_EasyLogInterface
 	} \
 }
 
+#define mU5_DEPRECATED() \
+{ \
+	if (enable && U5_DO_DEBUG_LOG && U5_DEBUG_ENABLE) \
+	{ \
+		U5::DebugMessage(*(U5_EasyLogInterface::GetLogStream() << FString( __func__ ) << ": IS DEPRECATED.")); \
+		U5_EasyLogInterface::GetLogStream().Reset(); \
+	} \
+}
+
 #define mU5_DEBUGOUT(enable, text) \
 { \
 	if(enable) \

@@ -14,7 +14,6 @@ class DP_CORE_API AU5_Event_CA : public AActor
 	DECLARE_EVENT_TwoParams(AU5_Event_CA, FOnEventFired, const FString&, float);
 public:
 	AU5_Event_CA();
-	virtual void PostInitializeComponents() override;
 	virtual void BeginPlay() override;
 	FOnEventFired& OnEventFired() { return OnEventFiredEvent; }
 
@@ -22,8 +21,8 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UU5_Event_ACC> EventComponent;
 
-	UFUNCTION()
-	void FireEvent(FString _eventName, float _eventValue, UU5_Event_ACC* _event);
-private:
 	FOnEventFired OnEventFiredEvent;
+
+	UFUNCTION()
+	void FireEvent(const FString& _eventName, float _eventValue, UU5_Event_ACC* _event);
 };

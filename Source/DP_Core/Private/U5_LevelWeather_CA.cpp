@@ -68,7 +68,7 @@ void AU5_LevelWeather_CA::ApplyExpFog()
 	ExponentialHeightFog->SetFogMaxOpacity(TargetFog->FogMaxOpacity);
 }
 
-void AU5_LevelWeather_CA::SetFXVisibility(bool _isVisible)
+void AU5_LevelWeather_CA::SetFXVisibility_Implementation(bool _isVisible)
 {
 	DirectionalLightWithShadow->SetVisibility(_isVisible);
 	DirectionalLightNoShadow->SetVisibility(_isVisible);

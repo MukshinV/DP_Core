@@ -24,8 +24,8 @@ public:
 	virtual void ApplyDirLightNoShadow(const ULightComponent* _lightComponent);
 	UFUNCTION(BlueprintCallable, DisplayName="!ApplyExpFog(C, Virtual)")
 	virtual void ApplyExpFog();
-	UFUNCTION(BlueprintCallable, DisplayName="!SetFXVisibility(C, Virtual)(bool)")
-	virtual void SetFXVisibility(bool _isVisible);
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, DisplayName="!SetFXVisibilityC")
+	void SetFXVisibility(bool _isVisible);
 
 	void ProcessDirectionalLights();
 	void ProcessExponentialFogs();
@@ -40,7 +40,7 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@DirectionalLightNoShadow")
 	TObjectPtr<class UDirectionalLightComponent> DirectionalLightNoShadow;
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@DirectionalLightNoShadow")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@DirectionalLightWithShadow")
 	TObjectPtr<UDirectionalLightComponent> DirectionalLightWithShadow;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@SkyLight")
 	TObjectPtr<class USkyLightComponent> SkyLight;

@@ -120,7 +120,7 @@ void AU5_AreaEvent_CA::OnActorEndedOverlap_Implementation(AActor* _otherActor)
 	gameInstance->RemoveArea(this);
 
 	bIsAreaActive = false;
-	OnAreaActivated_Implementation();
+	OnAreaDeactivated_Implementation();
 }
 
 void AU5_AreaEvent_CA::OnAreaActivated_Implementation()
@@ -130,7 +130,7 @@ void AU5_AreaEvent_CA::OnAreaActivated_Implementation()
 
 	for (int32 i = 0; i < AreaActivationEvents.Num(); ++i)
 	{
-		FAreaActivationEventHandle& currentHandle = AreaActivationEvents[i];
+		FU5_AreaActivationEventHandle_Struct& currentHandle = AreaActivationEvents[i];
 		UU5_Event_BlueprintLibrary::EventHandleToString(eventString, currentHandle.EventHandle);
 		UU5_Event_BlueprintLibrary::SetEventValue(world, eventString, currentHandle.FireValue);
 	}
@@ -145,7 +145,7 @@ void AU5_AreaEvent_CA::OnAreaDeactivated_Implementation()
 
 	for (int32 i = 0; i < AreaDeactivationEvents.Num(); ++i)
 	{
-		FAreaActivationEventHandle& currentHandle = AreaActivationEvents[i];
+		FU5_AreaActivationEventHandle_Struct& currentHandle = AreaActivationEvents[i];
 		UU5_Event_BlueprintLibrary::EventHandleToString(eventString, currentHandle.EventHandle);
 		UU5_Event_BlueprintLibrary::SetEventValue(world, eventString, currentHandle.FireValue);
 	}

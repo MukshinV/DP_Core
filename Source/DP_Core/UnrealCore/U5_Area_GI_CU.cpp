@@ -22,19 +22,18 @@ void UU5_Area_GI_CU::RemoveArea(AU5_AreaEvent_CA* _areaActor)
 {
 	AreasArray.Remove(_areaActor);
 
-	if(AreasArray.Num() > 0)
+	if(AreasArray.Num() == 0)
 	{
-		if(AreasArray[0] != CurrentArea)
-		{
-			CurrentArea = AreasArray[0];
-			OnCurrentAreaChanged();
-		}
-		
+		CurrentArea = nullptr;
+		OnCurrentAreaChanged();
 		return;
 	}
 
-	CurrentArea = nullptr;
-	OnCurrentAreaChanged();
+	if(AreasArray[0] != CurrentArea)
+	{
+		CurrentArea = AreasArray[0];
+		OnCurrentAreaChanged();
+	}
 }
 
 void UU5_Area_GI_CU::SetCurrentArea(AU5_AreaEvent_CA* _areaActor)

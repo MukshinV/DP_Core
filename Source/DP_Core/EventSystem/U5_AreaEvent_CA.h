@@ -7,11 +7,11 @@
 #include "U5_AreaEvent_CA.generated.h"
 
 USTRUCT(BlueprintType)
-struct FAreaActivationEventHandle
+struct FU5_AreaActivationEventHandle_Struct
 {
 	GENERATED_BODY()
 public:
-	FAreaActivationEventHandle() = default;
+	FU5_AreaActivationEventHandle_Struct() = default;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@EventHandleC")
 	FDataTableRowHandle EventHandle;
@@ -54,9 +54,9 @@ public:
 	
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@AreaActivationEventsC")
-	TArray<FAreaActivationEventHandle> AreaActivationEvents;
+	TArray<FU5_AreaActivationEventHandle_Struct> AreaActivationEvents;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@AreaDeactivationEventsC")
-	TArray<FAreaActivationEventHandle> AreaDeactivationEvents;
+	TArray<FU5_AreaActivationEventHandle_Struct> AreaDeactivationEvents;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@IsAreaActiveC")
 	bool bIsAreaActive;
 
