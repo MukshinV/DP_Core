@@ -31,10 +31,6 @@ public:
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@AreasArray")
 	TArray<AU5_AreaEvent_CA*> AreasArray;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing=OnRep_CurrentArea, DisplayName="@CurrentArea")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@CurrentArea")
 	TObjectPtr<AU5_AreaEvent_CA> CurrentArea;
-
-	UFUNCTION()
-	void OnRep_CurrentArea();
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
 };

@@ -7,7 +7,7 @@
 
 #include "U5_Event_ACC.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FEventChangeDelegate, const FString&, EventName, float, EventValue, UU5_Event_ACC*, Event);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_ThreeParams(FEventChangeDelegate, FString, EventName, float, EventValue, UU5_Event_ACC*, Event);
 
 UCLASS(Blueprintable)
 class DP_CORE_API UU5_Event_ACC : public UActorComponent

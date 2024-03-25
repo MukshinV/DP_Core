@@ -11,17 +11,11 @@ UU5_Area_GI_CU::UU5_Area_GI_CU()
 {
 }
 
-void UU5_Area_GI_CU::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
-{
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
-
-	DOREPLIFETIME(UU5_Area_GI_CU, CurrentArea)
-}
-
 void UU5_Area_GI_CU::PushArea(AU5_AreaEvent_CA* _areaActor)
 {
 	AreasArray.Insert(_areaActor, 0);
 	CurrentArea = _areaActor;
+	OnCurrentAreaChanged();
 }
 
 void UU5_Area_GI_CU::RemoveArea(AU5_AreaEvent_CA* _areaActor)
@@ -33,17 +27,20 @@ void UU5_Area_GI_CU::RemoveArea(AU5_AreaEvent_CA* _areaActor)
 		if(AreasArray[0] != CurrentArea)
 		{
 			CurrentArea = AreasArray[0];
+			OnCurrentAreaChanged();
 		}
 		
 		return;
 	}
 
 	CurrentArea = nullptr;
+	OnCurrentAreaChanged();
 }
 
 void UU5_Area_GI_CU::SetCurrentArea(AU5_AreaEvent_CA* _areaActor)
 {
 	CurrentArea = _areaActor;
+	OnCurrentAreaChanged();
 }
 
 void UU5_Area_GI_CU::OnCurrentAreaChanged()
@@ -67,9 +64,4 @@ void UU5_Area_GI_CU::OnCurrentAreaChanged()
 
 void UU5_Area_GI_CU::TravelTo_Implementation(const FDataTableRowHandle& _levelToGo)
 {
-}
-
-void UU5_Area_GI_CU::OnRep_CurrentArea()
-{
-	OnCurrentAreaChanged();
 }

@@ -22,7 +22,7 @@ AU5_AreaEvent_CA::AU5_AreaEvent_CA()
 
 void AU5_AreaEvent_CA::ActivateThisArea()
 {
-	OnAreaActivated();
+	OnAreaActivated_Implementation();
 }
 
 void AU5_AreaEvent_CA::ActivateFX(bool _isActive)
@@ -97,23 +97,30 @@ bool AU5_AreaEvent_CA::IsLocalPlayer(AActor* _actor) const
 	return controller->CurrentBehavior == foundBehaviour;
 }
 
-void AU5_AreaEvent_CA::GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const
+void AU5_AreaEvent_CA::OnActorStartedOverlap_Implementation(AActor* _otherActor)
 {
-	Super::GetLifetimeReplicatedProps(OutLifetimeProps);
+	if(!IsLocalPlayer(_otherActor)) return;
+	
+	UU5_Area_GI_CU* gameInstance = Cast<UU5_Area_GI_CU>(GetGameInstance());
+	if(!gameInstance) return;
 
-	DOREPLIFETIME(AU5_AreaEvent_CA, bIsAreaActive);
+	gameInstance->PushArea(this);
+
+	bIsAreaActive = true;
+	OnAreaActivated_Implementation();
 }
 
-void AU5_AreaEvent_CA::OnRep_IsAreaActive()
+void AU5_AreaEvent_CA::OnActorEndedOverlap_Implementation(AActor* _otherActor)
 {
-}
+	if(!IsLocalPlayer(_otherActor)) return;
 
-void AU5_AreaEvent_CA::OnActorStartedOverlap_Implementation()
-{
-}
+	UU5_Area_GI_CU* gameInstance = Cast<UU5_Area_GI_CU>(GetGameInstance());
+	if(!gameInstance) return;
 
-void AU5_AreaEvent_CA::OnActorEndedOverlap_Implementation()
-{
+	gameInstance->RemoveArea(this);
+
+	bIsAreaActive = false;
+	OnAreaActivated_Implementation();
 }
 
 void AU5_AreaEvent_CA::OnAreaActivated_Implementation()

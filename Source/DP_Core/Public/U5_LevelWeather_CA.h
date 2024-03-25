@@ -3,13 +3,12 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "U5_Level_CA.h"
-#include "EventSystem/U5_AreaEvent_CA.h"
+#include "U5_LevelActor_CA.h"
 #include "GameFramework/Actor.h"
 #include "U5_LevelWeather_CA.generated.h"
 
 UCLASS()
-class DP_CORE_API AU5_LevelWeather_CA : public AU5_Level_CA
+class DP_CORE_API AU5_LevelWeather_CA : public AU5_LevelActor_CA
 {
 	GENERATED_BODY()
 

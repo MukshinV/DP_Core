@@ -34,9 +34,9 @@ public:
 	void OnAreaDeactivated();
 
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, DisplayName="!OnActorStartedOverlapC")
-	void OnActorStartedOverlap();
+	void OnActorStartedOverlap(AActor* _otherActor);
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, DisplayName="!OnActorEndedOverlapC")
-	void OnActorEndedOverlap();
+	void OnActorEndedOverlap(AActor* _otherActor);
 
 	UFUNCTION(BlueprintCallable, DisplayName="!ActivateThisArea(C, Virtual)")
 	virtual void ActivateThisArea();
@@ -57,15 +57,9 @@ protected:
 	TArray<FAreaActivationEventHandle> AreaActivationEvents;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@AreaDeactivationEventsC")
 	TArray<FAreaActivationEventHandle> AreaDeactivationEvents;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, ReplicatedUsing=OnRep_IsAreaActive, DisplayName="@IsAreaActiveC")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@IsAreaActiveC")
 	bool bIsAreaActive;
 
 	UFUNCTION(BlueprintCallable, DisplayName="!IsLocalPlayer(Actor)")
 	bool IsLocalPlayer(AActor* _actor) const;
-
-	virtual void GetLifetimeReplicatedProps(TArray<FLifetimeProperty>& OutLifetimeProps) const override;
-	
-	UFUNCTION()
-	virtual void OnRep_IsAreaActive();
-	
 };

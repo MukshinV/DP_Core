@@ -21,8 +21,8 @@ void UU5_Event_BlueprintLibrary::SetEventValue(const UWorld* _world, const FStri
 		return;
 	}
 
-	if(_bEvenIsDisabled || !IsEventDisabled(_world, _eventName)) return;
-	if(_bEvenIfAlreadySet || !FMath::IsNearlyEqual(_eventValue, currentEventValue)) return;
+	if(IsEventDisabled(_world, _eventName) || _bEvenIsDisabled) return;
+	if(FMath::IsNearlyEqual(_eventValue, currentEventValue) || _bEvenIfAlreadySet) return;
 
 	UU5_EventSystem_ACC* foundEventSystem = GetEventSystem(_world);
 	if(!foundEventSystem) return;
