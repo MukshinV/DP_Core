@@ -1,6 +1,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "NiagaraComponent.h"
 #include "Components/ActorComponent.h"
 #include "Net/UnrealNetwork.h"
 
@@ -76,10 +77,14 @@ public: // Transform calcultations
 	UFUNCTION(BlueprintPure, DisplayName = "!IsAutoBodyRotationEnabled(C)", Category = "Rotation")
 	FRotator GetFrameBodyRotation() const;
 
+public: //FX
+	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, DisplayName="!SetCurrentParticles(C, Virtual)(NiagaraComponent)")
+	void SetCurrentParticles(UNiagaraComponent* _particles);
+
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, DisplayName="@CameraYawConstrainCurveC")
-	TObjectPtr<UCurveFloat> CameraYawConstrainCurve;
+	TObjectPtr<class UCurveFloat> CameraYawConstrainCurve;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@HorizontalCameraYawConstrainValueC")
 	FVector2D HorizontalCameraYawConstrainValue;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@PreviousControlRotationC")

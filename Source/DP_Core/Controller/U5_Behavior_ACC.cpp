@@ -66,6 +66,10 @@ FRotator UU5_Behavior_ACC::GetFrameBodyRotation() const
 	return FrameBodyRotation;
 }
 
+void UU5_Behavior_ACC::SetCurrentParticles_Implementation(UNiagaraComponent* _particles)
+{
+}
+
 void UU5_Behavior_ACC::UpdateRotationsCamera()
 {
 	const bool bIsRotatingToRight = FMath::Sign<int32>(FrameControlRotation.Yaw - GetFrameBodyRotation().Yaw) == 1;
