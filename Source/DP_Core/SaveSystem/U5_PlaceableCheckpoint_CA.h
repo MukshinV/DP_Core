@@ -6,7 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "U5_PlaceableCheckpoint_CA.generated.h"
 
-UCLASS()
+UCLASS(Blueprintable)
 class DP_CORE_API AU5_PlaceableCheckpoint_CA : public AActor
 {
 	GENERATED_BODY()
