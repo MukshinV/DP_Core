@@ -9,6 +9,8 @@
 AU5_LevelActor_CA::AU5_LevelActor_CA()
 {
 	PrimaryActorTick.bCanEverTick = false;
+
+	
 }
 
 void AU5_LevelActor_CA::StartGame_Implementation()
@@ -19,7 +21,7 @@ void AU5_LevelActor_CA::StartGame_Implementation()
 	UU5_Event_BlueprintLibrary::EventHandleToString(eventString, LoadStateEventHandle); 
 	UU5_Event_BlueprintLibrary::SetEventValue(GetWorld(), eventString, 1.0f);
 
-	RunDefaultEventValues_Implementation();
+	RunDefaultEventValues();
 }
 
 void AU5_LevelActor_CA::RunDefaultEventValues_Implementation()
