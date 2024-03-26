@@ -43,9 +43,9 @@ protected:
 
 public: // Event system.
 	// Event system contains: 
-	// FEventSystemData + FEventHandlers
-	// FEventSystemData->TMap<FString, FEventHandlers> Events; - the pair <EventKey(FString, FEventHandlers)>
-	// FEventHandlers - is array of this evet key abonents, that handle any this event value change.
+	// * FEventSystemData + FEventHandlers
+	// * FEventSystemData->TMap<FString, FEventHandlers> Events; - the pair <EventKey(FString, FEventHandlers)>
+	// * FEventHandlers - is array of this evet key abonents, that handle any this event value change.
 	UPROPERTY(BlueprintAssignable, DisplayName = "cbNewEvent")
 	FNewEventRegistredDelegate OnNewEventRegistred;
 
