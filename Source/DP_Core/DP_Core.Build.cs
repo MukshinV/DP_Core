@@ -41,7 +41,9 @@ public class DP_Core : ModuleRules
 				"Engine",
 				"Slate",
 				"SlateCore",
-                "AIModule"
+                "AIModule",
+                "NiagaraCore",
+                "Niagara"
 			}
 			);
 		
