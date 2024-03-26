@@ -27,6 +27,7 @@ class DP_CORE_API AU5_AreaEvent_CA : public AU5_Event_CA
 
 public:
 	AU5_AreaEvent_CA();
+	virtual void BeginPlay() override;
 	
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, DisplayName="!OnAreaActivatedC")
 	void OnAreaActivated();

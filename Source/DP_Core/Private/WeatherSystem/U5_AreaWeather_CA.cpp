@@ -17,7 +17,7 @@ void AU5_AreaWeather_CA::MakeActive()
 	AActor* levelWeather = UGameplayStatics::GetActorOfClass(this, AU5_LevelWeather_CA::StaticClass());
 	if(levelWeather)
 	{
-		Cast<AU5_LevelWeather_CA>(levelWeather)->SetWeatherSource(this);
+		Cast<AU5_LevelWeather_CA>(levelWeather)->SetFXVisibility(false);
 	}
 }
 

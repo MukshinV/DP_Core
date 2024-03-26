@@ -28,6 +28,8 @@ void UU5_Event_BlueprintLibrary::SetEventValue(const UWorld* _world, const FStri
 	if(!foundEventSystem) return;
 
 	foundEventSystem->SetEventValueS(_eventName, _eventValue);
+
+	mU5_DEBUGOUT(true, L"Set Event Value: " << _eventName << L" : " << _eventValue);
 }
 
 bool UU5_Event_BlueprintLibrary::TryGetEventValue(const UWorld* _world, const FString& _eventName, float& _eventValue)

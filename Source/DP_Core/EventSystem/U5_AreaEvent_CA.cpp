@@ -13,6 +13,7 @@
 #include "Engine/ExponentialHeightFog.h"
 #include "Components/ExponentialHeightFogComponent.h"
 #include "Utils/U5_Utils.h"
+#include "WeatherSystem/U5_AreaWeather_CA.h"
 
 AU5_AreaEvent_CA::AU5_AreaEvent_CA()
 {
@@ -20,13 +21,21 @@ AU5_AreaEvent_CA::AU5_AreaEvent_CA()
 	bReplicates = true;
 }
 
+void AU5_AreaEvent_CA::BeginPlay()
+{
+	Super::BeginPlay();
+	ActivateFX(false);
+}
+
 void AU5_AreaEvent_CA::ActivateThisArea()
 {
-	OnAreaActivated_Implementation();
+	OnAreaActivated();
 }
 
 void AU5_AreaEvent_CA::ActivateFX(bool _isActive)
 {
+	mU5_DEBUGOUT(true, L"Area event: " << mDNAME(this) << L". FX set active: " << _isActive);
+	
 	TArray<UDirectionalLightComponent*> directionalLights{};
 	GetComponents<UDirectionalLightComponent>(directionalLights);
 
@@ -55,7 +64,7 @@ void AU5_AreaEvent_CA::MakeActive()
 void AU5_AreaEvent_CA::SwitchOff()
 {
 	TArray<AActor*> areaEvents{};
-	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AU5_AreaEvent_CA::StaticClass(), areaEvents);
+	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AU5_AreaWeather_CA::StaticClass(), areaEvents);
 
 	for(int32 i = 0; i < areaEvents.Num(); ++i)
 	{
@@ -107,7 +116,7 @@ void AU5_AreaEvent_CA::OnActorStartedOverlap_Implementation(AActor* _otherActor)
 	gameInstance->PushArea(this);
 
 	bIsAreaActive = true;
-	OnAreaActivated_Implementation();
+	OnAreaActivated();
 }
 
 void AU5_AreaEvent_CA::OnActorEndedOverlap_Implementation(AActor* _otherActor)
@@ -120,7 +129,7 @@ void AU5_AreaEvent_CA::OnActorEndedOverlap_Implementation(AActor* _otherActor)
 	gameInstance->RemoveArea(this);
 
 	bIsAreaActive = false;
-	OnAreaDeactivated_Implementation();
+	OnAreaDeactivated();
 }
 
 void AU5_AreaEvent_CA::OnAreaActivated_Implementation()
