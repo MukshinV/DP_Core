@@ -6,6 +6,8 @@
 #include "U5_Event_CA.h"
 #include "U5_AreaEvent_CA.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FAreaActivated);
+
 USTRUCT(BlueprintType)
 struct FU5_AreaActivationEventHandle_Struct
 {
@@ -25,7 +27,7 @@ class DP_CORE_API AU5_AreaEvent_CA : public AU5_Event_CA
 {
 	GENERATED_BODY()
 
-public:
+public: // Area Activation.
 	AU5_AreaEvent_CA();
 	virtual void BeginPlay() override;
 	
@@ -43,6 +45,13 @@ public:
 	virtual void ActivateThisArea();
 	UFUNCTION(BlueprintCallable, DisplayName="!ActivateFX(C, Virtual)(bool)")
 	virtual void ActivateFX(bool _isActive);
+
+	UFUNCTION(BlueprintCallable, DisplayName = "!AfterActivateArea(C, Virtual)")
+	virtual void AfterAreaActivated();
+
+public: // Dispathers.
+	UPROPERTY(BlueprintAssignable)
+	FAreaActivated cbAreaActivated;
 
 #if WITH_EDITOR
 	UFUNCTION(BlueprintCallable, CallInEditor, DisplayName="!MakeActive(OnlyEditor)")

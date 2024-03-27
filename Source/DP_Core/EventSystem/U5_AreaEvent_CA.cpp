@@ -53,6 +53,11 @@ void AU5_AreaEvent_CA::ActivateFX(bool _isActive)
 	}
 }
 
+void AU5_AreaEvent_CA::AfterAreaActivated()
+{
+	cbAreaActivated.Broadcast();
+}
+
 #if WITH_EDITOR
 
 void AU5_AreaEvent_CA::MakeActive()
@@ -117,6 +122,7 @@ void AU5_AreaEvent_CA::OnActorStartedOverlap_Implementation(AActor* _otherActor)
 
 	bIsAreaActive = true;
 	OnAreaActivated();
+	AfterAreaActivated();
 }
 
 void AU5_AreaEvent_CA::OnActorEndedOverlap_Implementation(AActor* _otherActor)
