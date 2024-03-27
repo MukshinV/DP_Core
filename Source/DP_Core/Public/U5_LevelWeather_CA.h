@@ -28,15 +28,17 @@ public:
 	void SetWeatherSource(AActor* _sourceActor);
 
 	UFUNCTION(BlueprintCallable, DisplayName="!InterpolateDirLightWithShadow(C, Virtual)(LightComponent)")
-	virtual void InterpolateDirLightWithShadow();
+	virtual void InterpolateDirLightWithShadow(float _interpolationValue);
 	UFUNCTION(BlueprintCallable, DisplayName="!InterpolateDirLightNoShadow(C, Virtual)(LightComponent)")
-	virtual void InterpolateDirLightNoShadow();
+	virtual void InterpolateDirLightNoShadow(float _interpolationValue);
 	UFUNCTION(BlueprintCallable, DisplayName="!InterpolateExpFog(C, Virtual)")
-	virtual void InterpolateExpFog();
+	virtual void InterpolateExpFog(float _interpolationValue);
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, DisplayName="!SetFXVisibilityC")
 	void SetFXVisibility(bool _isVisible);
 
 protected:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@InterpolationCurve")
+	TObjectPtr<UCurveFloat> InterpolationCurve;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@LocalWeatherSource")
 	TObjectPtr<AActor> LocalWeatherSource;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@DirectionalLightNoShadow")
@@ -50,9 +52,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@ExponentialHeightFog")
 	TObjectPtr<class UExponentialHeightFogComponent> ExponentialHeightFog;
 
-	void InterpolateParticles() const;
-	void InterpolateSkyLight() const;
-	void InterpolateWeatherData();
+	void InterpolateParticles(float _interpolationValue) const;
+	void InterpolateSkyLight(float _interpolationValue) const;
+	void InterpolateWeatherData(float _interpolationValue);
 	
 	virtual void Tick(float DeltaSeconds) override;
 	

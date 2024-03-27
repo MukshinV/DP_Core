@@ -22,6 +22,14 @@ public:
 	bool bCastShadows{};
 	
 	FU5_WeatherLightData_Struct() = default;
+
+	void ResetLightData()
+	{
+		Intensity = 0.0f;
+		LightWorldRotation = FRotator::ZeroRotator;
+		LightColor = FLinearColor::White;
+		bCastShadows = false;
+	}
 };
 
 USTRUCT(BlueprintType)
@@ -39,6 +47,13 @@ public:
 	bool bCastShadows{};
 	
 	FU5_WeatherShadowColorData_Struct() = default;
+	void ResetShadowColorData()
+	{
+		Intensity = 0.0f;
+		SourceCubemapAngle = 0.0f;
+		VolumetricScatteringIntensity = 0.0f;
+		bCastShadows = false;
+	}
 };
 
 USTRUCT(BlueprintType)
@@ -66,6 +81,19 @@ public:
 	bool bHiddenInGame{};
 	
 	FU5_WeatherHeightFog_Struct() = default;
+
+	void ResetWeatherHeightFogData()
+	{
+		FogDensity = 0.0f;
+		FogHeightFalloff = 0.0f;
+		SecondFogDensity = 0.0f;
+		SecondFogHeightFalloff = 0.0f;
+		SecondFogHeightOffset = 0.0f;
+		FogMaxOpacity = 0.0f;
+		FogInscatteringColor = FLinearColor::White;
+		bVolumetricFog = false;
+		bHiddenInGame = false;
+	}
 };
 
 
@@ -91,5 +119,10 @@ public:
 	void ResetWeatherData()
 	{
 		bIsValid = false;
+		WeatherShadowsLightData.ResetLightData();
+		WeatherNoShadowsLightDatas.ResetLightData();
+		WeatherShadowColorData.ResetShadowColorData();
+		WeatherFogData.ResetWeatherHeightFogData();
+		WeatherParticles = nullptr;
 	}
 };
