@@ -5,7 +5,16 @@
 #include "CoreMinimal.h"
 #include "U5_LevelActor_CA.h"
 #include "GameFramework/Actor.h"
+#include "WeatherSystem/U5_WeatherSystemTypes.h"
 #include "U5_LevelWeather_CA.generated.h"
+
+USTRUCT()
+struct FU5_WeatherInterpolator_Struct
+{
+	GENERATED_BODY()
+public:
+	
+};
 
 UCLASS()
 class DP_CORE_API AU5_LevelWeather_CA : public AU5_LevelActor_CA
@@ -18,26 +27,18 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, DisplayName="!SetWeatherSourceC")
 	void SetWeatherSource(AActor* _sourceActor);
 
-	UFUNCTION(BlueprintCallable, DisplayName="!ApplyDirLightWithShadow(C, Virtual)(LightComponent)")
-	virtual void ApplyDirLightWithShadow(const class ULightComponent* _lightComponent);
-	UFUNCTION(BlueprintCallable, DisplayName="!ApplyDirLightNoShadow(C, Virtual)(LightComponent)")
-	virtual void ApplyDirLightNoShadow(const ULightComponent* _lightComponent);
-	UFUNCTION(BlueprintCallable, DisplayName="!ApplyExpFog(C, Virtual)")
-	virtual void ApplyExpFog();
+	UFUNCTION(BlueprintCallable, DisplayName="!InterpolateDirLightWithShadow(C, Virtual)(LightComponent)")
+	virtual void InterpolateDirLightWithShadow();
+	UFUNCTION(BlueprintCallable, DisplayName="!InterpolateDirLightNoShadow(C, Virtual)(LightComponent)")
+	virtual void InterpolateDirLightNoShadow();
+	UFUNCTION(BlueprintCallable, DisplayName="!InterpolateExpFog(C, Virtual)")
+	virtual void InterpolateExpFog();
 	UFUNCTION(BlueprintCallable, BlueprintNativeEvent, DisplayName="!SetFXVisibilityC")
 	void SetFXVisibility(bool _isVisible);
 
-	void ProcessDirectionalLights();
-	void ProcessExponentialFogs();
-	void ProcessParticles() const;
-	void ProcessSkyLight();
-
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@LocalWeatherSource")
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@LocalWeatherSource")
 	TObjectPtr<AActor> LocalWeatherSource;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, DisplayName="@TargetFog")
-	TObjectPtr<class UExponentialHeightFogComponent> TargetFog;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@DirectionalLightNoShadow")
 	TObjectPtr<class UDirectionalLightComponent> DirectionalLightNoShadow;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@DirectionalLightWithShadow")
@@ -48,4 +49,16 @@ protected:
 	TObjectPtr<class UPostProcessComponent> PostProcess;
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, DisplayName="@ExponentialHeightFog")
 	TObjectPtr<class UExponentialHeightFogComponent> ExponentialHeightFog;
+
+	void InterpolateParticles() const;
+	void InterpolateSkyLight() const;
+	void InterpolateWeatherData();
+	
+	virtual void Tick(float DeltaSeconds) override;
+	
+private:
+	FU5_WeatherData_Struct CurrentWeatherData{};
+	FU5_WeatherData_Struct PreviousWeatherData{};
+	
+	float _weatherInterpolationValue{1.0f};
 };

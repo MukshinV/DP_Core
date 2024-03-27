@@ -11,11 +11,13 @@
 #include "Controller/U5_Behavior_ACC.h"
 #include "UnrealCore/U5_GameInstace.h"
 #include "Utils/U5_Utils.h"
+#include "WeatherSystem/U5_WeatherSource_CI.h"
 
 
 AU5_LevelWeather_CA::AU5_LevelWeather_CA()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bStartWithTickEnabled = false;
 
 	USceneComponent* sceneComponent = CreateDefaultSubobject<USceneComponent>(L"Scene");
 	sceneComponent->SetupAttachment(RootComponent);
@@ -30,42 +32,53 @@ AU5_LevelWeather_CA::AU5_LevelWeather_CA()
 	PostProcess->SetupAttachment(sceneComponent);
 	ExponentialHeightFog = CreateDefaultSubobject<UExponentialHeightFogComponent>(L"ExponentialHeightFog");
 	ExponentialHeightFog->SetupAttachment(sceneComponent);
+
+	_weatherInterpolationValue = 1.0f;
 }
 
-void AU5_LevelWeather_CA::ApplyDirLightWithShadow(const ULightComponent* _lightComponent)
+void AU5_LevelWeather_CA::InterpolateDirLightWithShadow()
 {
-	DirectionalLightWithShadow->SetIntensity(_lightComponent->Intensity);
-	DirectionalLightWithShadow->SetWorldRotation(_lightComponent->GetComponentRotation());
-	DirectionalLightWithShadow->SetLightColor(_lightComponent->LightColor);
+	const float targetIntensity = FMath::Lerp(PreviousWeatherData.WeatherShadowsLightData.Intensity, CurrentWeatherData.WeatherShadowsLightData.Intensity, _weatherInterpolationValue);
+	const FRotator targetRotator = FMath::Lerp(PreviousWeatherData.WeatherShadowsLightData.LightWorldRotation, CurrentWeatherData.WeatherShadowsLightData.LightWorldRotation, _weatherInterpolationValue);
+	const FLinearColor targetColor = FMath::Lerp(PreviousWeatherData.WeatherShadowsLightData.LightColor, CurrentWeatherData.WeatherShadowsLightData.LightColor, _weatherInterpolationValue);
+	
+	DirectionalLightWithShadow->SetIntensity(targetIntensity);
+	DirectionalLightWithShadow->SetWorldRotation(targetRotator);
+	DirectionalLightWithShadow->SetLightColor(targetColor);
 }
 
-void AU5_LevelWeather_CA::ApplyDirLightNoShadow(const ULightComponent* _lightComponent)
+void AU5_LevelWeather_CA::InterpolateDirLightNoShadow()
 {
-	DirectionalLightNoShadow->SetIntensity(_lightComponent->Intensity);
-	DirectionalLightNoShadow->SetWorldRotation(_lightComponent->GetComponentRotation());
-	DirectionalLightNoShadow->SetLightColor(_lightComponent->LightColor);
+	const float targetIntensity = FMath::Lerp(PreviousWeatherData.WeatherNoShadowsLightDatas.Intensity, CurrentWeatherData.WeatherNoShadowsLightDatas.Intensity, _weatherInterpolationValue);
+	const FRotator targetRotator = FMath::Lerp(PreviousWeatherData.WeatherNoShadowsLightDatas.LightWorldRotation, CurrentWeatherData.WeatherNoShadowsLightDatas.LightWorldRotation, _weatherInterpolationValue);
+	const FLinearColor targetColor = FMath::Lerp(PreviousWeatherData.WeatherNoShadowsLightDatas.LightColor, CurrentWeatherData.WeatherNoShadowsLightDatas.LightColor, _weatherInterpolationValue);
+	
+	DirectionalLightNoShadow->SetIntensity(targetIntensity);
+	DirectionalLightNoShadow->SetWorldRotation(targetRotator);
+	DirectionalLightNoShadow->SetLightColor(targetColor);
 }
 
-void AU5_LevelWeather_CA::ApplyExpFog()
+void AU5_LevelWeather_CA::InterpolateExpFog()
 {
-	if(TargetFog->bHiddenInGame)
-	{
-		ExponentialHeightFog->SetHiddenInGame(true);
-	}
-	else
-	{
-		ExponentialHeightFog->SetHiddenInGame(false);
-		ExponentialHeightFog->SetFogDensity(TargetFog->FogDensity);
-		ExponentialHeightFog->SetFogHeightFalloff(TargetFog->FogHeightFalloff);
-	}
+	//???
+	ExponentialHeightFog->SetHiddenInGame(CurrentWeatherData.WeatherFogData.bHiddenInGame);
+	ExponentialHeightFog->SetVolumetricFog(CurrentWeatherData.WeatherFogData.bVolumetricFog);
 
-	ExponentialHeightFog->SetSecondFogDensity(TargetFog->SecondFogData.FogDensity);
-	ExponentialHeightFog->SetSecondFogHeightFalloff(TargetFog->SecondFogData.FogHeightFalloff);
-	ExponentialHeightFog->SetSecondFogHeightOffset(TargetFog->SecondFogData.FogHeightOffset);
+	const float targetFogDensity = FMath::Lerp(PreviousWeatherData.WeatherFogData.FogDensity, CurrentWeatherData.WeatherFogData.FogDensity, _weatherInterpolationValue);
+	const float targetHeightFalloff = FMath::Lerp(PreviousWeatherData.WeatherFogData.FogHeightFalloff, CurrentWeatherData.WeatherFogData.FogHeightFalloff, _weatherInterpolationValue);
+	const float targetFogMaxOpacity = FMath::Lerp(PreviousWeatherData.WeatherFogData.FogMaxOpacity, CurrentWeatherData.WeatherFogData.FogMaxOpacity, _weatherInterpolationValue);
+	const FLinearColor targetInscatteringLuminance = FMath::Lerp(PreviousWeatherData.WeatherFogData.FogInscatteringColor, CurrentWeatherData.WeatherFogData.FogInscatteringColor, _weatherInterpolationValue);
+	const float targetSecondFogDensity = FMath::Lerp(PreviousWeatherData.WeatherFogData.SecondFogDensity, CurrentWeatherData.WeatherFogData.SecondFogDensity, _weatherInterpolationValue);
+	const float targetSecondFogHeightFalloff = FMath::Lerp(PreviousWeatherData.WeatherFogData.SecondFogHeightFalloff, CurrentWeatherData.WeatherFogData.SecondFogHeightFalloff, _weatherInterpolationValue);
+	const float targetSecondFogHeightOffset = FMath::Lerp(PreviousWeatherData.WeatherFogData.SecondFogHeightOffset, CurrentWeatherData.WeatherFogData.SecondFogHeightOffset, _weatherInterpolationValue);
 
-	ExponentialHeightFog->SetFogInscatteringColor(TargetFog->FogInscatteringLuminance);
-	ExponentialHeightFog->SetVolumetricFog(TargetFog->bEnableVolumetricFog);
-	ExponentialHeightFog->SetFogMaxOpacity(TargetFog->FogMaxOpacity);
+	ExponentialHeightFog->SetFogDensity(targetFogDensity);
+	ExponentialHeightFog->SetFogHeightFalloff(targetHeightFalloff);
+	ExponentialHeightFog->SetFogInscatteringColor(targetInscatteringLuminance);
+	ExponentialHeightFog->SetFogMaxOpacity(targetFogMaxOpacity);
+	ExponentialHeightFog->SetSecondFogDensity(targetSecondFogDensity);
+	ExponentialHeightFog->SetSecondFogHeightFalloff(targetSecondFogHeightFalloff);
+	ExponentialHeightFog->SetSecondFogHeightOffset(targetSecondFogHeightOffset);
 }
 
 void AU5_LevelWeather_CA::SetFXVisibility_Implementation(bool _isVisible)
@@ -75,66 +88,51 @@ void AU5_LevelWeather_CA::SetFXVisibility_Implementation(bool _isVisible)
 	ExponentialHeightFog->SetVisibility(_isVisible);
 }
 
-void AU5_LevelWeather_CA::ProcessDirectionalLights()
-{
-	TArray<UDirectionalLightComponent*> directionalLights;
-	LocalWeatherSource->GetComponents<UDirectionalLightComponent>(directionalLights);
-
-	for (int32 i = 0; i < directionalLights.Num(); ++i)
-	{
-		UDirectionalLightComponent* dirLight = directionalLights[i];
-		if(dirLight->CastShadows)
-		{
-			ApplyDirLightWithShadow(dirLight);
-			continue;
-		}
-
-		ApplyDirLightNoShadow(dirLight);
-	}
-}
-
-void AU5_LevelWeather_CA::ProcessExponentialFogs()
-{
-	TArray<UActorComponent*> foundFogs = LocalWeatherSource->GetComponentsByTag(UExponentialHeightFogComponent::StaticClass(), FName{L"!AreaHeightFog"});
-
-	for (int32 i = 0; i < foundFogs.Num(); ++i)
-	{
-		UExponentialHeightFogComponent* fog = Cast<UExponentialHeightFogComponent>(foundFogs[i]);
-		TargetFog = fog;
-	}
-
-	ApplyExpFog();
-}
-
-void AU5_LevelWeather_CA::ProcessParticles() const
+void AU5_LevelWeather_CA::InterpolateParticles() const
 {
 	const UU5_GameInstance* gameInstance = Cast<UU5_GameInstance>(GetGameInstance());
 	if(!gameInstance) return;
 	if(!gameInstance->LocalController) return;
 	UU5_Behavior_ACC* behaviour = gameInstance->LocalController->GetPawn()->FindComponentByClass<UU5_Behavior_ACC>();
 	if(!behaviour) return;
-	
-	TArray<UActorComponent*> foundParticles = LocalWeatherSource->GetComponentsByTag(UNiagaraComponent::StaticClass(), FName{L"!LocalPlayerSystem"});
 
-	for (int32 i = 0; i < foundParticles.Num(); ++i)
-	{
-		UNiagaraComponent* particle = Cast<UNiagaraComponent>(foundParticles[i]);
-		behaviour->SetCurrentParticles(particle);
-	}
+	behaviour->SetCurrentParticles(CurrentWeatherData.WeatherParticles);
 }
 
-void AU5_LevelWeather_CA::ProcessSkyLight()
+void AU5_LevelWeather_CA::InterpolateSkyLight() const
 {
-	TArray<UActorComponent*> foundSkylights = LocalWeatherSource->GetComponentsByTag(USkyLightComponent::StaticClass(), FName{L"!ShadowColor"});
+	SkyLight->SetCastShadows(CurrentWeatherData.WeatherShadowColorData.bCastShadows);
+	
+	const float targetSkyIntensity = FMath::Lerp(PreviousWeatherData.WeatherShadowColorData.Intensity, CurrentWeatherData.WeatherShadowColorData.Intensity, _weatherInterpolationValue);
+	const float targetSkySourceCubemapAngle = FMath::Lerp(PreviousWeatherData.WeatherShadowColorData.SourceCubemapAngle, CurrentWeatherData.WeatherShadowColorData.SourceCubemapAngle, _weatherInterpolationValue);
+	const float targetSkyVolumetricScatteringIntensity = FMath::Lerp(PreviousWeatherData.WeatherShadowColorData.VolumetricScatteringIntensity, CurrentWeatherData.WeatherShadowColorData.VolumetricScatteringIntensity, _weatherInterpolationValue);
+	
+	SkyLight->SetIntensity(targetSkyIntensity);
+	SkyLight->SetSourceCubemapAngle(targetSkySourceCubemapAngle);
+	SkyLight->SetVolumetricScatteringIntensity(targetSkyVolumetricScatteringIntensity);
+}
 
-	for (int32 i = 0; i < foundSkylights.Num(); ++i)
+void AU5_LevelWeather_CA::InterpolateWeatherData()
+{
+	InterpolateDirLightNoShadow();
+	InterpolateDirLightWithShadow();
+	InterpolateExpFog();
+	InterpolateSkyLight();
+	InterpolateParticles();
+}
+
+void AU5_LevelWeather_CA::Tick(float DeltaSeconds)
+{
+	Super::Tick(DeltaSeconds);
+
+	_weatherInterpolationValue += DeltaSeconds;
+	_weatherInterpolationValue = FMath::Min(1.0f, _weatherInterpolationValue);
+	
+	InterpolateWeatherData();
+
+	if(FMath::IsNearlyEqual(1.0f, _weatherInterpolationValue))
 	{
-		const USkyLightComponent* incomingSkylight = Cast<USkyLightComponent>(foundSkylights[i]);
-
-		SkyLight->SetIntensity(incomingSkylight->Intensity);
-		SkyLight->SetSourceCubemapAngle(incomingSkylight->SourceCubemapAngle);
-		SkyLight->SetCastShadows(incomingSkylight->CastShadows);
-		SkyLight->SetVolumetricScatteringIntensity(incomingSkylight->VolumetricScatteringIntensity);
+		SetActorTickEnabled(false);
 	}
 }
 
@@ -143,12 +141,23 @@ void AU5_LevelWeather_CA::SetWeatherSource_Implementation(AActor* _sourceActor)
 	if(!_sourceActor) return;
 
 	SetFXVisibility(true);
-	LocalWeatherSource = _sourceActor;
 
+	LocalWeatherSource = _sourceActor;
 	mU5_DEBUGOUT(true, L"New level weather " << mDNAME(LocalWeatherSource))
-	
-	ProcessDirectionalLights();
-	ProcessExponentialFogs();
-	ProcessParticles();
-	ProcessSkyLight();
+
+	IU5_WeatherSource_CI* weatherSourceInterface = Cast<IU5_WeatherSource_CI>(LocalWeatherSource);
+	if(!weatherSourceInterface) return;
+
+	PreviousWeatherData = CurrentWeatherData;
+	CurrentWeatherData = weatherSourceInterface->Execute_GetWeatherData(LocalWeatherSource);
+
+	if(!PreviousWeatherData.bIsValid)
+	{
+		_weatherInterpolationValue = 1.0f;
+		InterpolateWeatherData();
+		return;
+	}
+
+	_weatherInterpolationValue = 0.0f;
+	SetActorTickEnabled(true);
 }

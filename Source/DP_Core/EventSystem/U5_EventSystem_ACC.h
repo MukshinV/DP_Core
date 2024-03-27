@@ -9,6 +9,7 @@
 
 #include "U5_EventSystem_ACC.generated.h"
 
+class UU5_Event_ACC;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FNewEventRegistredDelegate, FString, EventTag, UU5_Event_ACC*, Event);
 
 USTRUCT()
